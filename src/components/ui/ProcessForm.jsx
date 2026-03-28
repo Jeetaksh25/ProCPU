@@ -151,10 +151,17 @@ const ProcessForm = () => {
       />
 
       <MotionBox
+        onViewportEnter={() => {
+          if (processes.length === 0) {
+            setTimeout(() => {
+              handleLoadSample();
+            }, 300);
+          }
+        }}
+        viewport={{ once: true, amount: 0.4 }}
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
         display="flex"
         flexDir="column"
         gap={4}
@@ -222,13 +229,14 @@ const ProcessForm = () => {
           <CustomButton text="Cancel" onClick={handleCancel} variant="ghost" />
         )}
 
-        <CustomButton text="Sample" onClick={handleLoadSample} />
-
         <CustomButton
           text={selectedId ? "Update Process" : "Add Process"}
           onClick={handleSubmit}
           isDisabled={isDisabled}
         />
+        {!selectedId && (
+          <CustomButton text="Load Sample" onClick={handleLoadSample} />
+        )}
       </MotionBox>
     </GlassBox>
   );
