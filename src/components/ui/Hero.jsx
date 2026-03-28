@@ -9,6 +9,12 @@ import GlassBox from "./GlassBox";
 const MotionBox = motion(Box);
 
 const Hero = () => {
+  const handleScroll = () => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: "smooth",
+    });
+  };
   return (
     <Box
       w="90%"
@@ -57,7 +63,7 @@ const Hero = () => {
             glow={false}
             maxW="600px"
           />
-          <CustomButton text="Get Started" />
+          <CustomButton text="Get Started" onClick={handleScroll} />
         </MotionBox>
 
         <MotionBox

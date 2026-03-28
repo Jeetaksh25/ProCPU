@@ -13,4 +13,35 @@
 @import "../node_modules/@syncfusion/ej2-richtexteditor/styles/tailwind3.css";
 @import "../node_modules/@syncfusion/ej2-treegrid/styles/tailwind3.css";
 
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Chewy&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Gabarito:wght@400..900&family=Orbitron:wght@400..900&family=Rajdhani:wght@300;400;500;600;700&family=Saira+Stencil+One&family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Winky+Sans:ital,wght@0,300..900;1,300..900&family=Zen+Dots&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Chewy&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Gabarito:wght@400..900&family=Orbitron:wght@400..900&family=Rajdhani:wght@300;400;500;600;700&family=Saira+Stencil+One&family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Winky+Sans:ital,wght@0,300..900;1,300..900&family=Zen+Dots&display=swap");
+
+/* Scrollbar base */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f4f6fb;
+  border-radius: 999px;
+}
+
+/* Thumb */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6d28d9, #d946ef);
+  border-radius: 999px;
+  border: 2px solid #f4f6fb;
+  transition: all 0.3s ease;
+}
+
+/* Hover */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5b21b6, #e879f9);
+  box-shadow: 0 0 8px rgba(217, 70, 239, 0.4);
+}
+
+/* Active (while dragging) */
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(45deg, #5b21b6, #e879f9);
+}

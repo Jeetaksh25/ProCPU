@@ -4,10 +4,9 @@ import { motion } from "framer-motion";
 
 const MotionFlex = motion(Flex);
 
-const GlassBox = ({
+const GlassBox2 = ({
   children,
   radius = "30px",
-  blur = "12px",
   padding,
   hoverColor,
   p,
@@ -20,7 +19,6 @@ const GlassBox = ({
       position="relative"
       borderRadius={radius}
       p={p}
-      backdropFilter={`blur(${blur})`}
       overflow="visible"
       transition="transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease, background-color 0.25s ease"
       boxShadow={`
@@ -69,4 +67,4 @@ const GlassBox = ({
   );
 };
 
-export default GlassBox;
+export default GlassBox2;

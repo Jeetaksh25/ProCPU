@@ -28,7 +28,7 @@ const App = () => {
     <Box w="100%" h="100%" bg={theme.colors.background} position="relative">
       <Background />
 
-      <Box position="relative" zIndex={1}>
+      <Box position="relative" zIndex={1} pb={20}>
         <NavBar />
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>

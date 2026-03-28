@@ -25,6 +25,7 @@ const HeadingText = ({
   fontSize,
   mb = theme.spacing.xl,
   hoverColor,
+  fontFamily,
   ...props
 }) => {
   const variants = {
@@ -76,19 +77,17 @@ const HeadingText = ({
             },
           },
         }}
-        fontFamily={theme.fonts.heading}
+        fontFamily={fontFamily || theme.fonts.heading}
         fontSize={fontSize || current.titleSize}
         fontWeight={current.titleWeight}
-        letterSpacing="-0.03em"
+        letterSpacing="0.03em"
         color={color}
         textShadow={
           glow &&
           `
-          0 1px 1px ${shadowBase},
-          0 0 2px ${glowStrong},
-          0 0 4px ${glowSoft},
-          0 0 6px ${glowWide}
-        `
+          0 0 0.25px ${shadowBase},
+          0 0 0.75px ${glowStrong}
+          `
         }
         whileHover={{
           color: hoverColor || color,
