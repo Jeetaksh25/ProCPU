@@ -13,13 +13,15 @@ const ProcessInput = () => {
       w="80%"
       mx="auto"
       position="relative"
-      mt={10}
       py={10}
       px={6}
       minH="500px"
     >
-      <HeadingText variant="section" title="Process Input" />
-
+      <HeadingText
+        variant="section"
+        title="Process Input"
+        subtitle="Start by adding processes to visualize and analyze CPU scheduling"
+      />
       <Flex
         justifyContent="space-around"
         align="stretch"

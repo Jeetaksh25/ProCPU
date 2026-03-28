@@ -4,13 +4,19 @@ export const useProcessStore = create((set) => ({
   processes: [],
   selectedId: null,
 
+  setProcesses: (processes) =>
+    set(() => ({
+      processes,
+      selectedId: null,
+    })),
+
   addProcess: (process) =>
     set((state) => ({
       processes: [
         ...state.processes,
         {
           ...process,
-          id: crypto.randomUUID(), // ✅ immutable internal key
+          id: crypto.randomUUID(),
         },
       ],
     })),

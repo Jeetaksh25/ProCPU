@@ -12,7 +12,13 @@ const GlassInput = ({
   ...props
 }) => {
   return (
-    <Flex direction="column" w="100%" align="flex-start" justify="flex-start">
+    <Flex
+      direction="column"
+      w="100%"
+      align="flex-start"
+      justify="flex-start"
+      userSelect={"none"}
+    >
       <HeadingText
         variant="card"
         color={theme.colors.textSecondary}

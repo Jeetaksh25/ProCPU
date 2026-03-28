@@ -7,6 +7,7 @@ import { theme } from "../../theme/theme";
 import GlassInput from "./GlassInput";
 import HeadingText from "./HeadingText";
 import { motion } from "framer-motion";
+import { generateSampleProcesses } from "../../functions/sampeData";
 
 const MotionBox = motion(Box);
 
@@ -38,6 +39,7 @@ const ProcessForm = () => {
     addProcess,
     updateAndClearSelected,
     clearSelected,
+    setProcesses,
   } = useProcessStore();
 
   const EMPTY_FORM = { name: "", arrival: "", burst: "", priority: "" };
@@ -45,26 +47,36 @@ const ProcessForm = () => {
   const selectedProcess = processes.find((p) => p.id === selectedId) ?? null;
 
   const [form, setForm] = useState(EMPTY_FORM);
-  const [error, setError] = useState("");
 
-  const validate = () => {
-    if (!form.name) return "Process name is required";
-    if (form.arrival === "" || Number(form.arrival) < 0)
-      return "Arrival time must be ≥ 0";
-    if (form.burst === "" || Number(form.burst) <= 0)
-      return "Burst time must be > 0";
-    return "";
+  const [status, setStatus] = useState({
+    message: "Create a new process",
+    isError: false,
+  });
+
+  const validate = (data) => {
+    if (!data.name)
+      return { message: "Process name is required", isError: true };
+    if (data.arrival === "" || Number(data.arrival) < 0)
+      return { message: "Arrival time must be ≥ 0", isError: true };
+    if (data.burst === "" || Number(data.burst) <= 0)
+      return { message: "Burst time must be > 0", isError: true };
+
+    return { message: "All good", isError: false };
   };
 
   const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-    if (error) setError("");
+    const updatedForm = { ...form, [field]: value };
+    setForm(updatedForm);
+
+    const result = validate(updatedForm);
+    setStatus(result);
   };
 
   const handleSubmit = () => {
-    const validationError = validate();
-    if (validationError) {
-      setError(validationError);
+    const result = validate(form);
+
+    if (result.isError) {
+      setStatus(result);
       return;
     }
 
@@ -80,14 +92,14 @@ const ProcessForm = () => {
     } else {
       addProcess(payload);
       setForm(EMPTY_FORM);
-      setError("");
+      setStatus({ message: "Process added successfully", isError: false });
     }
   };
 
   const handleCancel = () => {
     clearSelected();
     setForm(EMPTY_FORM);
-    setError("");
+    setStatus({ message: "Create a new process", isError: false });
   };
 
   const handleKeyDown = (e) => {
@@ -109,9 +121,16 @@ const ProcessForm = () => {
       });
     } else {
       setForm(EMPTY_FORM);
-      setError("");
+      setStatus({ message: "Create a new process", isError: false });
     }
   }, [selectedId]);
+
+  const handleLoadSample = () => {
+    const sample = generateSampleProcesses();
+    setProcesses(sample);
+    setForm(EMPTY_FORM);
+    setError("");
+  };
 
   return (
     <GlassBox
@@ -186,11 +205,9 @@ const ProcessForm = () => {
         </MotionBox>
       </MotionBox>
 
-      {error && (
-        <Text fontSize="sm" color="red.300">
-          {error}
-        </Text>
-      )}
+      <Text fontSize="sm" color={status.isError ? "red.300" : "green.300"}>
+        {status.message}
+      </Text>
 
       <MotionBox
         initial={{ opacity: 0 }}
@@ -204,6 +221,9 @@ const ProcessForm = () => {
         {selectedId && (
           <CustomButton text="Cancel" onClick={handleCancel} variant="ghost" />
         )}
+
+        <CustomButton text="Sample" onClick={handleLoadSample} />
+
         <CustomButton
           text={selectedId ? "Update Process" : "Add Process"}
           onClick={handleSubmit}
