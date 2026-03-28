@@ -1,0 +1,16 @@
+@import "../node_modules/@syncfusion/ej2-base/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-buttons/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-calendars/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-dropdowns/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-gantt/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-grids/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-inputs/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-layouts/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-lists/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-navigations/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-notifications/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-popups/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-richtexteditor/styles/tailwind3.css";
+@import "../node_modules/@syncfusion/ej2-treegrid/styles/tailwind3.css";
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Chewy&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Gabarito:wght@400..900&family=Orbitron:wght@400..900&family=Rajdhani:wght@300;400;500;600;700&family=Saira+Stencil+One&family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Winky+Sans:ital,wght@0,300..900;1,300..900&family=Zen+Dots&display=swap');
