@@ -129,7 +129,7 @@ const ProcessForm = () => {
     const sample = generateSampleProcesses();
     setProcesses(sample);
     setForm(EMPTY_FORM);
-    setError("");
+    setStatus({ message: "Sample processes loaded", isError: false });
   };
 
   return (

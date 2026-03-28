@@ -21,6 +21,8 @@ export const useProcessStore = create((set) => ({
       ],
     })),
 
+  clearProcesses: () => set({ processes: [] }),
+
   removeProcess: (id) =>
     set((state) => ({
       processes: state.processes.filter((p) => p.id !== id),

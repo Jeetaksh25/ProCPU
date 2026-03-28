@@ -12,11 +12,17 @@ const GlassBox = ({
   hoverColor,
   p,
   variants,
+  initial,
+  animate,
+  exit,
   ...props
 }) => {
   return (
     <MotionFlex
       variants={variants}
+      initial={initial}
+      animate={animate}
+      exit={exit}
       position="relative"
       borderRadius={radius}
       p={p}

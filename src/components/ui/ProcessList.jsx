@@ -5,10 +5,23 @@ import { theme } from "../../theme/theme";
 import { IoTrash } from "react-icons/io5";
 import { hexToRgba } from "../../functions/color";
 import HeadingText from "./HeadingText";
+import CustomButton from "./CustomButton";
+import { motion } from "framer-motion";
+
+const MotionFlex = motion(Flex);
+const MotionGlassBox = motion(GlassBox);
 
 const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12 } },
+  hidden: {
+    opacity: 1,
+  },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.1,
+    },
+  },
 };
 
 const itemVariants = {
@@ -29,7 +42,7 @@ const itemVariants = {
 
 const ProcessListItem = ({ p, removeProcess, setSelected, isSelected }) => {
   return (
-    <GlassBox
+    <MotionGlassBox
       p={4}
       radius={theme.radii.md}
       cursor="pointer"
@@ -66,30 +79,30 @@ const ProcessListItem = ({ p, removeProcess, setSelected, isSelected }) => {
           <IoTrash />
         </Box>
       </Flex>
-    </GlassBox>
+    </MotionGlassBox>
   );
 };
 
 const ProcessList = () => {
-  const { processes, removeProcess, setSelected, selectedId } =
+  const { processes, removeProcess, setSelected, selectedId, clearProcesses } =
     useProcessStore();
 
   return (
     <GlassBox
+      key={processes.length}
       flexDir="column"
       gap={theme.spacing.md}
-      p={6}
       flex="1"
+      py={theme.spacing.md}
       minW="320px"
       maxW="500px"
       blur="2px"
       alignSelf="stretch"
       overflowY="auto"
       overflowX="hidden"
-      maxH="550px"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      maxH="580px"
+      alignContent="center"
+      justifyContent="center"
     >
       <HeadingText
         title={"Processes"}
@@ -99,18 +112,46 @@ const ProcessList = () => {
       />
 
       {processes.length === 0 && (
-        <Text color={theme.colors.textMuted}>No processes added</Text>
+        <Text color={theme.colors.textMuted} textAlign="center">
+          No processes added
+        </Text>
       )}
 
-      {processes.map((p) => (
-        <ProcessListItem
-          key={p.id}
-          p={p}
-          removeProcess={removeProcess}
-          setSelected={setSelected}
-          isSelected={selectedId === p.id}
-        />
-      ))}
+      <MotionFlex
+        as={motion.div}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        flexDir="column"
+        gap={theme.spacing.md}
+        px={theme.spacing.md}
+        flex="1"
+        overflowY="auto"
+        overflowX={"hidden"}
+      >
+        {processes.map((p) => (
+          <ProcessListItem
+            key={p.id}
+            p={p}
+            removeProcess={removeProcess}
+            setSelected={setSelected}
+            isSelected={selectedId === p.id}
+          />
+        ))}
+      </MotionFlex>
+
+      {processes.length > 0 && (
+        <Box
+          justifyContent={"center"}
+          w={"100%"}
+          alignContent={"center"}
+          display={"flex"}
+          m={0}
+          p={0}
+        >
+          <CustomButton text="Clear All Processes" onClick={clearProcesses} />
+        </Box>
+      )}
     </GlassBox>
   );
 };
