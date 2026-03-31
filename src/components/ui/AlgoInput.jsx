@@ -4,9 +4,16 @@ import HeadingText from "./HeadingText";
 import AlgoSelect from "./AlgoSelect";
 import AlgoPerformance from "./AlgoPerformance";
 import { useState } from "react";
+import CustomButton from "./CustomButton";
 
-const AlgoInput = () => {
+const AlgoInput = ({ scrollTargetRef }) => {
   const [selectedAlgo, setSelectedAlgo] = useState("FCFS");
+  const handleScroll = () => {
+    scrollTargetRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <Box
@@ -16,12 +23,14 @@ const AlgoInput = () => {
       display={"flex"}
     >
       <GlassBox2
+        direction="column"
         w="80%"
         mx="auto"
-        py={10}
+        position="relative"
+        py={6}
         px={6}
         minH="500px"
-        direction="column"
+        alignItems="center"
       >
         <HeadingText
           variant="section"
@@ -36,6 +45,13 @@ const AlgoInput = () => {
           />
           <AlgoPerformance selectedAlgo={selectedAlgo} />
         </Flex>
+
+        <CustomButton
+          text="Start Simulation"
+          onClick={handleScroll}
+          width="max-content"
+          mt={4}
+        />
       </GlassBox2>
     </Box>
   );

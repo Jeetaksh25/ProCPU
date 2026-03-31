@@ -108,7 +108,13 @@ const AlgoPerformance = ({ selectedAlgo }) => {
         </SeriesCollectionDirective>
       </ChartComponent>
 
-      <Flex justify="space-around" align="center" flexDir={"row"}>
+      <Flex
+        justify="space-around"
+        align="center"
+        flexDir={"row"}
+        mt={4}
+        h={"40px"}
+      >
         <HeadingText
           title={`Avg WT: ${avgWT?.toFixed(2) ?? "--"} ms`}
           variant="card"

@@ -36,6 +36,7 @@ const ProcessInput = ({ scrollTargetRef }) => {
           title="Process Input"
           subtitle="Start by adding processes to visualize and analyze CPU scheduling"
         />
+        
         <Flex
           justifyContent="space-around"
           align="stretch"
@@ -46,6 +47,7 @@ const ProcessInput = ({ scrollTargetRef }) => {
           <ProcessForm />
           <ProcessList />
         </Flex>
+
         <CustomButton
           text="Select Algorithm"
           onClick={handleScroll}

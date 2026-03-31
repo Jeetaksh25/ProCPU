@@ -36,7 +36,11 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
     schedulingType,
     timeQuantum,
   } = useProcessStore();
-  const recommended = getRecommendedAlgo(processes);
+  const recommended = getRecommendedAlgo(
+    processes,
+    schedulingType,
+    timeQuantum
+  );
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -191,7 +195,7 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
         fontSize="lg"
         color={theme.colors.primary}
         title={algo.name}
-        mb="0px"
+        mb="-10px"
       />
 
       <Flex
@@ -200,23 +204,26 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
         color={"white"}
         fontSize={"xs"}
         align={"flex-end"}
+        mb={2}
       >
         <Box display={"flex"} gap={2} flexDir={"row"}>
-          <Box
-            px={3}
-            py={2}
-            borderRadius="20px"
-            cursor="pointer"
-            bg={
-              schedulingType === "non-preemptive"
-                ? theme.colors.primary
-                : theme.colors.textMuted
-            }
-            onClick={() => setSchedulingType("non-preemptive")}
-            h={"min-content"}
-          >
-            Non-Preemptive
-          </Box>
+          {selectedAlgo !== "RR" && (
+            <Box
+              px={3}
+              py={2}
+              borderRadius="20px"
+              cursor="pointer"
+              bg={
+                schedulingType === "non-preemptive"
+                  ? theme.colors.primary
+                  : theme.colors.textMuted
+              }
+              onClick={() => setSchedulingType("non-preemptive")}
+              h={"min-content"}
+            >
+              Non-Preemptive
+            </Box>
+          )}
 
           <Box
             px={3}
@@ -250,7 +257,7 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
 
               setTimeQuantum(val);
             }}
-            titleFontSize="1.2em"
+            titleFontSize="1em"
           />
         )}
       </Flex>

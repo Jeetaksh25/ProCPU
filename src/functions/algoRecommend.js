@@ -42,9 +42,7 @@ export const runSchedulingAlgo = (
       waitingTimes[p.id] = start - p.arrival;
       currentTime = start + p.burst;
     });
-  }
-
-  else if (algo === "RR") {
+  } else if (algo === "RR") {
     if (!timeQuantum || timeQuantum <= 0) {
       timeQuantum = 1;
     }
@@ -86,9 +84,7 @@ export const runSchedulingAlgo = (
         completed++;
       }
     }
-  }
-
-  else if (algo === "SJF" && schedulingType === "preemptive") {
+  } else if (algo === "SJF" && schedulingType === "preemptive") {
     let visited = Array(n).fill(false);
 
     while (completed < n) {
@@ -128,12 +124,10 @@ export const runSchedulingAlgo = (
     y: waitingTimes[p.id],
   }));
 
-  const avgWT =
-    Object.values(waitingTimes).reduce((a, b) => a + b, 0) / n;
+  const avgWT = Object.values(waitingTimes).reduce((a, b) => a + b, 0) / n;
 
   return { graph, avgWT };
 };
-
 
 export const getRecommendedAlgo = (
   processes,
@@ -142,7 +136,10 @@ export const getRecommendedAlgo = (
 ) => {
   if (!processes || processes.length === 0) return null;
 
-  const algos = ["FCFS", "SJF", "Priority", "RR"];
+  const algos =
+    schedulingType === "preemptive"
+      ? ["SJF", "RR"]
+      : ["FCFS", "SJF", "Priority", "RR"];
 
   let bestAlgo = null;
   let bestWT = Infinity;
