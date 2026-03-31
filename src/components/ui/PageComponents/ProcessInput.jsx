@@ -1,10 +1,10 @@
 import { Flex, Box } from "@chakra-ui/react";
-import ProcessForm from "./ProcessForm";
-import ProcessList from "./ProcessList";
-import GlassBox from "./GlassBox";
-import HeadingText from "./HeadingText";
-import GlassBox2 from "./GlassBox2";
-import CustomButton from "./CustomButton";
+import ProcessForm from "../ProcessInput/ProcessForm";
+import ProcessList from "../ProcessInput/ProcessList";
+import GlassBox from "../GlassComponents/GlassBox";
+import HeadingText from "../OtherUI/HeadingText";
+import GlassBox2 from "../GlassComponents/GlassBox2";
+import CustomButton from "../OtherUI/CustomButton";
 
 const ProcessInput = ({ scrollTargetRef }) => {
   const handleScroll = () => {

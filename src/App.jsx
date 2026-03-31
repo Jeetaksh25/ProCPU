@@ -7,9 +7,9 @@ import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import FrontPage from "./pages/FrontPage.jsx";
 import StatsPage from "./pages/StatsPage.jsx";
-import Background from "./components/ui/Background.jsx";
-import CursorHighlight from "./components/ui/CursorHighlight.jsx";
-import NavBar from "./components/ui/NavBar.jsx";
+import Background from "./components/ui/OtherUI/Background.jsx";
+import CursorHighlight from "./components/ui/OtherUI/CursorHighlight.jsx";
+import NavBar from "./components/ui/OtherUI/NavBar.jsx";
 
 const App = () => {
   const location = useLocation();

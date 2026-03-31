@@ -1,10 +1,11 @@
 import { Box, Text, Button, Flex, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { theme } from "../../theme/theme";
-import HeadingText from "./HeadingText";
-import HeroImage from "../../assets/Hero1.png";
-import CustomButton from "./CustomButton";
-import GlassBox from "./GlassBox";
+import { theme } from "../../../theme/theme";
+import HeadingText from "../OtherUI/HeadingText";
+import HeroImage from "../../../assets/Hero1.png";
+import CustomButton from "../OtherUI/CustomButton";
+import GlassBox from "../GlassComponents/GlassBox";
+import Logo from "../../../assets/Logo2.png";
 
 const MotionBox = motion(Box);
 
@@ -54,7 +55,11 @@ const Hero = ({ scrollTargetRef }) => {
             align="left"
             variant="hero"
             hoverColor={theme.colors.accent}
+            mb="0px"
+            logo={Logo}
+            logoSize={'50px'}
           />
+
           <HeadingText
             title="Experiment with FCFS, SJF, Round Robin, and Priority Scheduling. Analyze performance metrics and understand how operating systems manage processes efficiently."
             align="left"

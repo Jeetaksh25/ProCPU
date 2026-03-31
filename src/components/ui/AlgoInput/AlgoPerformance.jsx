@@ -8,15 +8,16 @@ import {
   Tooltip,
 } from "@syncfusion/ej2-react-charts";
 
-import GlassBox from "./GlassBox";
-import HeadingText from "./HeadingText";
-import { useProcessStore } from "../../store/processStore";
+import GlassBox from "../GlassComponents/GlassBox";
+import HeadingText from "../OtherUI/HeadingText";
+import { useProcessStore } from "../../../store/processStore";
 import {
   generateGraphData,
   runSchedulingAlgo,
   getRecommendedAlgo,
-} from "../../functions/algoRecommend";
+} from "../../../functions/algoRecommend";
 import { Flex } from "@chakra-ui/react";
+import { theme } from "../../../theme/theme";
 
 const generateData = (algo) => {
   switch (algo) {
@@ -102,7 +103,13 @@ const AlgoPerformance = ({ selectedAlgo }) => {
             yName="y"
             type="Line"
             width={3}
-            marker={{ visible: true, height: 8, width: 8 }}
+            fill={theme.colors.accent}
+            marker={{
+              visible: true,
+              height: 8,
+              width: 8,
+              fill: theme.colors.primary,
+            }}
             name={selectedAlgo}
           />
         </SeriesCollectionDirective>

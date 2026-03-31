@@ -1,7 +1,7 @@
 import { Box, Button, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { theme } from "../../theme/theme";
-import { hexToRgba } from "../../functions/color";
+import { theme } from "../../../theme/theme";
+import { hexToRgba } from "../../../functions/color";
 
 const MotionButton = motion(Button);
 const MotionText = motion(Text);

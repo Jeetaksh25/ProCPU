@@ -1,13 +1,14 @@
 import { Box, Button, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { theme } from "../../theme/theme";
-import { hexToRgba } from "../../functions/color";
+import { theme } from "../../../theme/theme";
+import { hexToRgba } from "../../../functions/color";
 import HeadingText from "./HeadingText";
 import { IoHome } from "react-icons/io5";
 import { IoInformationCircle } from "react-icons/io5";
 import { IoStatsChartSharp } from "react-icons/io5";
-import GlassBox from "./GlassBox";
+import GlassBox from "../GlassComponents/GlassBox";
 import { useNavigate } from "react-router-dom";
+import Logo from "../../../assets/Logo2.png";
 
 const MotionBox = motion(Box);
 const MotionText = motion(Text);
@@ -64,6 +65,9 @@ const NavBar = () => {
         mb="0px"
         color={theme.colors.primary}
         hoverColor={theme.colors.accent}
+        logo={Logo}
+        logoSize={"40px"}
+        onClick={() => navigate("/")}
       />
 
       <Box flexDir={"row"} display={"flex"} gap={4}>

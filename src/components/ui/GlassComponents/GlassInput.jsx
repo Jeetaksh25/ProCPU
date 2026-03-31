@@ -1,7 +1,7 @@
 import { Flex, Input } from "@chakra-ui/react";
-import { hexToRgba } from "../../functions/color";
-import { theme } from "../../theme/theme";
-import HeadingText from "./HeadingText";
+import { hexToRgba } from "../../../functions/color";
+import { theme } from "../../../theme/theme";
+import HeadingText from "../OtherUI/HeadingText";
 
 const GlassInput = ({
   placeholder,

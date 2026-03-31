@@ -1,10 +1,10 @@
 import { Flex, Box } from "@chakra-ui/react";
-import GlassBox2 from "./GlassBox2";
-import HeadingText from "./HeadingText";
-import AlgoSelect from "./AlgoSelect";
-import AlgoPerformance from "./AlgoPerformance";
+import GlassBox2 from "../GlassComponents/GlassBox2";
+import HeadingText from "../OtherUI/HeadingText";
+import AlgoSelect from "../AlgoInput/AlgoSelect";
+import AlgoPerformance from "../AlgoInput/AlgoPerformance";
 import { useState } from "react";
-import CustomButton from "./CustomButton";
+import CustomButton from "../OtherUI/CustomButton";
 
 const AlgoInput = ({ scrollTargetRef }) => {
   const [selectedAlgo, setSelectedAlgo] = useState("FCFS");

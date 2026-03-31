@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { hexToRgba } from "../../functions/color";
+import { hexToRgba } from "../../../functions/color";
 import { motion } from "framer-motion";
 
 const MotionFlex = motion(Flex);

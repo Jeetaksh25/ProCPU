@@ -1,14 +1,14 @@
 import { Box, Text, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import GlassBox from "./GlassBox";
-import HeadingText from "./HeadingText";
-import { theme } from "../../theme/theme";
-import { algorithms } from "../../data/algorithms";
-import { useProcessStore } from "../../store/processStore";
-import { getRecommendedAlgo } from "../../functions/algoRecommend";
+import GlassBox from "../GlassComponents/GlassBox";
+import HeadingText from "../OtherUI/HeadingText";
+import { theme } from "../../../theme/theme";
+import { algorithms } from "../../../data/algorithms";
+import { useProcessStore } from "../../../store/processStore";
+import { getRecommendedAlgo } from "../../../functions/algoRecommend";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { AnimatePresence } from "framer-motion";
-import GlassInput from "./GlassInput";
+import GlassInput from "../GlassComponents/GlassInput";
 
 const variants = {
   enter: (direction) => ({
@@ -50,8 +50,17 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
     setDirection(1);
 
     const newIndex = (index + 1) % algorithms.length;
+    const newAlgo = algorithms[newIndex].id;
+
     setIndex(newIndex);
-    setSelectedAlgo(algorithms[newIndex].id);
+    setSelectedAlgo(newAlgo);
+
+    if (newAlgo === "RR") {
+      setSchedulingType("preemptive");
+      setTimeQuantum(2);
+    } else {
+      setSchedulingType("non-preemptive");
+    }
   };
 
   const handlePrev = () => {
@@ -59,8 +68,17 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
     setDirection(-1);
 
     const newIndex = (index - 1 + algorithms.length) % algorithms.length;
+    const newAlgo = algorithms[newIndex].id;
+
     setIndex(newIndex);
-    setSelectedAlgo(algorithms[newIndex].id);
+    setSelectedAlgo(newAlgo);
+
+    if (newAlgo === "RR") {
+      setSchedulingType("preemptive");
+      setTimeQuantum(2);
+    } else {
+      setSchedulingType("non-preemptive");
+    }
   };
 
   const algo = algorithms[index];
@@ -224,22 +242,23 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
               Non-Preemptive
             </Box>
           )}
-
-          <Box
-            px={3}
-            py={2}
-            borderRadius="20px"
-            cursor="pointer"
-            bg={
-              schedulingType === "preemptive"
-                ? theme.colors.primary
-                : theme.colors.textMuted
-            }
-            onClick={() => setSchedulingType("preemptive")}
-            h={"min-content"}
-          >
-            Preemptive
-          </Box>
+          {selectedAlgo !== "FCFS" && (
+            <Box
+              px={3}
+              py={2}
+              borderRadius="20px"
+              cursor="pointer"
+              bg={
+                schedulingType === "preemptive"
+                  ? theme.colors.primary
+                  : theme.colors.textMuted
+              }
+              onClick={() => setSchedulingType("preemptive")}
+              h={"min-content"}
+            >
+              Preemptive
+            </Box>
+          )}
         </Box>
 
         {selectedAlgo === "RR" && (

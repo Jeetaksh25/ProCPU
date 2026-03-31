@@ -1,13 +1,13 @@
 import { Flex, Text, Box } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { useProcessStore } from "../../store/processStore";
-import CustomButton from "./CustomButton";
-import GlassBox from "./GlassBox";
-import { theme } from "../../theme/theme";
-import GlassInput from "./GlassInput";
-import HeadingText from "./HeadingText";
+import { useProcessStore } from "../../../store/processStore";
+import CustomButton from "../OtherUI/CustomButton";
+import GlassBox from "../GlassComponents/GlassBox";
+import { theme } from "../../../theme/theme";
+import GlassInput from "../GlassComponents/GlassInput";
+import HeadingText from "../OtherUI/HeadingText";
 import { motion } from "framer-motion";
-import { generateSampleProcesses } from "../../functions/sampeData";
+import { generateSampleProcesses } from "../../../functions/sampeData";
 
 const MotionBox = motion(Box);
 

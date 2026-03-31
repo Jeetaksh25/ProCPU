@@ -1,11 +1,11 @@
 import { Box, Text, Flex } from "@chakra-ui/react";
-import { useProcessStore } from "../../store/processStore";
-import GlassBox from "./GlassBox";
-import { theme } from "../../theme/theme";
+import { useProcessStore } from "../../../store/processStore";
+import GlassBox from "../GlassComponents/GlassBox";
+import { theme } from "../../../theme/theme";
 import { IoTrash } from "react-icons/io5";
-import { hexToRgba } from "../../functions/color";
-import HeadingText from "./HeadingText";
-import CustomButton from "./CustomButton";
+import { hexToRgba } from "../../../functions/color";
+import HeadingText from "../OtherUI/HeadingText";
+import CustomButton from "../OtherUI/CustomButton";
 import { motion } from "framer-motion";
 
 const MotionFlex = motion(Flex);

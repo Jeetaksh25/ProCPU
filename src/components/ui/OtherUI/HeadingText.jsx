@@ -1,7 +1,7 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, Flex, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { theme } from "../../theme/theme";
-import { hexToRgba } from "../../functions/color";
+import { theme } from "../../../theme/theme";
+import { hexToRgba } from "../../../functions/color";
 
 const MotionBox = motion(Box);
 const MotionText = motion(Text);
@@ -26,6 +26,9 @@ const HeadingText = ({
   mb = theme.spacing.xl,
   hoverColor,
   fontFamily,
+  logo,
+  logoSize,
+  onClick,
   ...props
 }) => {
   const variants = {
@@ -62,39 +65,86 @@ const HeadingText = ({
       mb={mb}
       userSelect={"none"}
       draggable={false}
+      cursor="pointer"
+      onClick={onClick}
       {...props}
     >
-      <MotionText
-        variants={{
-          hidden: { opacity: 0, y: 20, scale: 0.98 },
-          visible: {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            transition: {
-              duration: 0.6,
-              ease: [0.22, 1, 0.36, 1],
+      {logo && (
+        <Flex alignItems="center" gap={4}>
+          <Image
+            src={logo}
+            boxSize={logoSize}
+            alt="logo"
+            _hover={{ transform: "scale(1.1)" }}
+            transition={"all 0.2s ease"}
+          />
+          <MotionText
+            variants={{
+              hidden: { opacity: 0, y: 20, scale: 0.98 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                transition: {
+                  duration: 0.6,
+                  ease: [0.22, 1, 0.36, 1],
+                },
+              },
+            }}
+            fontFamily={fontFamily || theme.fonts.heading}
+            fontSize={fontSize || current.titleSize}
+            fontWeight={current.titleWeight}
+            letterSpacing="0.03em"
+            color={color}
+            textShadow={
+              glow &&
+              `
+                0 0 0.25px ${shadowBase},
+                0 0 0.75px ${glowStrong}
+                `
+            }
+            whileHover={{
+              color: hoverColor || color,
+            }}
+          >
+            {title}
+          </MotionText>
+        </Flex>
+      )}
+
+      {!logo && (
+        <MotionText
+          variants={{
+            hidden: { opacity: 0, y: 20, scale: 0.98 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              transition: {
+                duration: 0.6,
+                ease: [0.22, 1, 0.36, 1],
+              },
             },
-          },
-        }}
-        fontFamily={fontFamily || theme.fonts.heading}
-        fontSize={fontSize || current.titleSize}
-        fontWeight={current.titleWeight}
-        letterSpacing="0.03em"
-        color={color}
-        textShadow={
-          glow &&
-          `
-          0 0 0.25px ${shadowBase},
-          0 0 0.75px ${glowStrong}
-          `
-        }
-        whileHover={{
-          color: hoverColor || color,
-        }}
-      >
-        {title}
-      </MotionText>
+          }}
+          fontFamily={fontFamily || theme.fonts.heading}
+          fontSize={fontSize || current.titleSize}
+          fontWeight={current.titleWeight}
+          letterSpacing="0.03em"
+          color={color}
+          textShadow={
+            glow &&
+            `
+              0 0 0.25px ${shadowBase},
+              0 0 0.75px ${glowStrong}
+              `
+          }
+          whileHover={{
+            color: hoverColor || color,
+          }}
+        >
+          {title}
+        </MotionText>
+      )}
 
       {subtitle && (
         <MotionText

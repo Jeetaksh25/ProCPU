@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box } from "@chakra-ui/react";
-import { theme } from "../../theme/theme";
-import { hexToRgba } from "../../functions/color";
+import { theme } from "../../../theme/theme";
+import { hexToRgba } from "../../../functions/color";
 
 const Background = () => {
   const [pos, setPos] = useState({ x: 0, y: 0 });

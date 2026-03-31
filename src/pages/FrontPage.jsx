@@ -2,10 +2,10 @@ import { Box, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { theme } from "./../theme/theme";
 import { useState, useEffect, useRef } from "react";
-import HeadingText from "../components/ui/HeadingText";
-import Hero from "../components/ui/Hero";
-import ProcessInput from "../components/ui/ProcessInput";
-import AlgoInput from "../components/ui/AlgoInput";
+import HeadingText from "../components/ui/OtherUI/HeadingText";
+import Hero from "../components/ui/PageComponents/Hero";
+import ProcessInput from "../components/ui/PageComponents/ProcessInput";
+import AlgoInput from "../components/ui/PageComponents/AlgoInput"
 
 const FrontPage = () => {
   const processRef = useRef(null);
