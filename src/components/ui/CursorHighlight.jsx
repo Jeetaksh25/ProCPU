@@ -1,4 +1,3 @@
-// CursorHighlight.jsx
 import { Box } from "@chakra-ui/react";
 import { theme } from "../../theme/theme";
 

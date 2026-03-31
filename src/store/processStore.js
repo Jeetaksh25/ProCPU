@@ -4,6 +4,9 @@ export const useProcessStore = create((set) => ({
   processes: [],
   selectedId: null,
 
+  schedulingType: "non-preemptive",
+  timeQuantum: 2,
+
   setProcesses: (processes) =>
     set(() => ({
       processes,
@@ -45,4 +48,7 @@ export const useProcessStore = create((set) => ({
     })),
 
   clearSelected: () => set({ selectedId: null }),
+
+  setSchedulingType: (type) => set({ schedulingType: type }),
+  setTimeQuantum: (q) => set({ timeQuantum: Number(q) }),
 }));

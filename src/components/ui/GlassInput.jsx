@@ -9,12 +9,14 @@ const GlassInput = ({
   blur = "10px",
   hoverColor,
   focusColor = "#7C3AED",
+  width = "100%",
+  titleFontSize = "1em",
   ...props
 }) => {
   return (
     <Flex
       direction="column"
-      w="100%"
+      w={width}
       align="flex-start"
       justify="flex-start"
       userSelect={"none"}
@@ -28,6 +30,7 @@ const GlassInput = ({
         paddingLeft={"1em"}
         textAlign="left"
         w="100%"
+        fontSize={titleFontSize}
       />
       <Input
         placeholder={placeholder}

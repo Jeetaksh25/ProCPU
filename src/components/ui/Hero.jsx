@@ -8,11 +8,11 @@ import GlassBox from "./GlassBox";
 
 const MotionBox = motion(Box);
 
-const Hero = () => {
+const Hero = ({ scrollTargetRef }) => {
   const handleScroll = () => {
-    window.scrollTo({
-      top: window.innerHeight,
+    scrollTargetRef.current?.scrollIntoView({
       behavior: "smooth",
+      block: "start",
     });
   };
   return (
