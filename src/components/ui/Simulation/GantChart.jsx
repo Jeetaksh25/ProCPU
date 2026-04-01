@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Text, Flex } from "@chakra-ui/react";
+import { Box, Text, Flex, Button } from "@chakra-ui/react";
 import GlassBox from "../GlassComponents/GlassBox";
 import { useProcessStore } from "../../../store/processStore";
 import { motion } from "framer-motion";
@@ -39,8 +39,8 @@ const RULER_H = 28;
 const TICK_COUNT = 24;
 const RIGHT_PADDING = 20;
 
-const GanttChart = () => {
-  const { timeline, currentTime, isPlaying, setCurrentTime } =
+const GanttChart = ({ isfullScreen, setFullScreen }) => {
+  const { timeline, currentTime, isPlaying, setCurrentTime, processes } =
     useProcessStore();
 
   useEffect(() => {
@@ -77,7 +77,8 @@ const GanttChart = () => {
     );
   }
 
-  const processIds = [...new Set(timeline.map((t) => t.id))];
+  // const processIds = [...new Set(timeline.map((t) => t.id))];
+  const processIds = processes.map((p) => p.id);
   const rowCount = processIds.length;
 
   const nameOf = {};
@@ -126,7 +127,7 @@ const GanttChart = () => {
       minW="320px"
       w="100%"
       userSelect="none"
-      maxH="70vh"
+      maxH={isfullScreen ? "92vh" : "70vh"}
     >
       <Flex align="center" gap={3} w={"95%"} mx="auto">
         <MotionBox
@@ -134,7 +135,7 @@ const GanttChart = () => {
           h="12px"
           borderRadius="full"
           flexShrink={0}
-          bg={currentTask ? color : "whiteAlpha.300"}
+          bg={currentTask ? color : "red.600"}
           animate={
             currentTask
               ? {
@@ -153,7 +154,11 @@ const GanttChart = () => {
               : { duration: 0.2 }
           }
         />
-        <Text color={color} fontSize="md" fontWeight={500}>
+        <Text
+          color={currentTask ? color : "red.600"}
+          fontSize="md"
+          fontWeight={500}
+        >
           {currentTask ? `Running: ${currentTask.name}` : "Idle"}
         </Text>
         <Text color="black" fontSize="sm" ml="auto">
@@ -162,148 +167,157 @@ const GanttChart = () => {
         <Text color="black" fontSize="sm">
           Progress = {((currentTime / TOTAL) * 100).toFixed(1)}%
         </Text>
+
+        <Button variant={"subtle"} onClick={() => setFullScreen(!isfullScreen)}>
+          {isfullScreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+        </Button>
       </Flex>
 
-      <Box w="100%" overflowX="auto">
-        <svg
-          viewBox={`0 0 ${SVG_W} ${SVG_H}`}
-          width="100%"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{
-            display: "block",
-            minWidth: "360px",
-            overflow: "auto",
-          }}
+      <Box w="100%" overflowX="auto" overflowY="auto">
+        <Box
+          transform={isfullScreen ? "scale(0.75)" : "scale(1)"}
+          transformOrigin="top center"
+          transition="0.2s ease"
         >
-          {Array.from({ length: TICK_COUNT + 1 }).map((_, i) => {
-            const x = CHART_X + (i / TICK_COUNT) * CHART_W;
+          <svg
+            viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+            width={"100%"}
+            xmlns="http://www.w3.org/2000/svg"
+            style={{
+              display: "block",
+              minWidth: "360px",
+              overflow: "auto",
+            }}
+          >
+            {Array.from({ length: TICK_COUNT + 1 }).map((_, i) => {
+              const x = CHART_X + (i / TICK_COUNT) * CHART_W;
 
-            return (
-              <line
-                key={"grid-" + i}
-                x1={x}
-                y1={0}
-                x2={x}
-                y2={rowCount * ROW_H}
-                stroke="rgba(0,0,0,0.1)"
-                strokeWidth={1}
-              />
-            );
-          })}
-          {processIds.map((pid, rowIdx) => {
-            const color = colorForId(pid);
-            const y = yOf(rowIdx);
-            const rowSegs = timeline.filter((t) => t.id === pid);
-
-            return (
-              <g key={pid}>
-                <text
-                  x={LABEL_W - 6}
-                  y={y + BAR_H / 2 + 3}
-                  textAnchor="end"
-                  style={{ fontSize: "10px" }}
-                  fill="rgba(0,0,0,0.55)"
-                  fontFamily="Inter, sans-serif"
-                  fontWeight="400"
-                >
-                  {nameOf[pid]}
-                </text>
-                <rect
-                  x={CHART_X}
-                  y={y}
-                  width={CHART_W}
-                  height={BAR_H}
-                  rx={4}
-                  fill="rgba(0,0,0,0.04)"
+              return (
+                <line
+                  key={"grid-" + i}
+                  x1={x}
+                  y1={0}
+                  x2={x}
+                  y2={rowCount * ROW_H}
+                  stroke="rgba(0,0,0,0.1)"
+                  strokeWidth={1}
                 />
+              );
+            })}
+            {processIds.map((pid, rowIdx) => {
+              const color = colorForId(pid);
+              const y = yOf(rowIdx);
+              const rowSegs = timeline.filter((t) => t.id === pid);
 
-                {rowSegs.map((seg, si) => {
-                  const sx = xOf(seg.scaledStart);
-                  const sw = wOf(seg.scaledStart, seg.scaledEnd);
+              return (
+                <g key={pid}>
+                  <text
+                    x={LABEL_W - 6}
+                    y={y + BAR_H / 2 + 3}
+                    textAnchor="end"
+                    style={{ fontSize: "10px" }}
+                    fill="rgba(0,0,0,0.55)"
+                    fontFamily="Inter, sans-serif"
+                    fontWeight="400"
+                  >
+                    {nameOf[pid]}
+                  </text>
+                  <rect
+                    x={CHART_X}
+                    y={y}
+                    width={CHART_W}
+                    height={BAR_H}
+                    rx={4}
+                    fill="rgba(0,0,0,0.04)"
+                  />
 
-                  const fillRatio =
-                    currentTime <= seg.scaledStart
-                      ? 0
-                      : currentTime >= seg.scaledEnd
-                      ? 1
-                      : (currentTime - seg.scaledStart) /
-                        (seg.scaledEnd - seg.scaledStart);
+                  {rowSegs.map((seg, si) => {
+                    const sx = xOf(seg.scaledStart);
+                    const sw = wOf(seg.scaledStart, seg.scaledEnd);
 
-                  const isActive =
-                    currentTime >= seg.scaledStart &&
-                    currentTime < seg.scaledEnd;
+                    const fillRatio =
+                      currentTime <= seg.scaledStart
+                        ? 0
+                        : currentTime >= seg.scaledEnd
+                        ? 1
+                        : (currentTime - seg.scaledStart) /
+                          (seg.scaledEnd - seg.scaledStart);
 
-                  return (
-                    <g key={si}>
-                      <rect
-                        x={sx}
-                        y={y}
-                        width={sw}
-                        height={BAR_H}
-                        rx={3}
-                        fill={color}
-                        opacity={0.22}
-                      />
-                      <rect
-                        x={sx}
-                        y={y}
-                        width={sw * fillRatio}
-                        height={BAR_H}
-                        rx={3}
-                        fill={color}
-                        opacity={0.9}
-                      />
-                      {isActive && (
+                    const isActive =
+                      currentTime >= seg.scaledStart &&
+                      currentTime < seg.scaledEnd;
+
+                    return (
+                      <g key={si}>
                         <rect
                           x={sx}
                           y={y}
                           width={sw}
                           height={BAR_H}
                           rx={3}
-                          fill="none"
-                          stroke={color}
-                          strokeWidth={1.5}
-                          opacity={0.8}
+                          fill={color}
+                          opacity={0.22}
                         />
-                      )}
-                    </g>
-                  );
-                })}
-              </g>
-            );
-          })}
+                        <rect
+                          x={sx}
+                          y={y}
+                          width={sw * fillRatio}
+                          height={BAR_H}
+                          rx={3}
+                          fill={color}
+                          opacity={0.9}
+                        />
+                        {isActive && (
+                          <rect
+                            x={sx}
+                            y={y}
+                            width={sw}
+                            height={BAR_H}
+                            rx={3}
+                            fill="none"
+                            stroke={color}
+                            strokeWidth={1.5}
+                            opacity={0.8}
+                          />
+                        )}
+                      </g>
+                    );
+                  })}
+                </g>
+              );
+            })}
 
-          {Array.from({ length: TICK_COUNT + 1 }).map((_, i) => {
-            const rx = CHART_X + (i / TICK_COUNT) * CHART_W;
+            {Array.from({ length: TICK_COUNT + 1 }).map((_, i) => {
+              const rx = CHART_X + (i / TICK_COUNT) * CHART_W;
 
-            const totalRealTime = timeline[timeline.length - 1].end;
-            const realTime = Math.round((i / TICK_COUNT) * totalRealTime);
+              const totalRealTime = timeline[timeline.length - 1].end;
+              const realTime = Math.round((i / TICK_COUNT) * totalRealTime);
 
-            return (
-              <g key={i}>
-                <line
-                  x1={rx}
-                  y1={rowCount * ROW_H + 4}
-                  x2={rx}
-                  y2={rowCount * ROW_H + 10}
-                  stroke="rgba(0,0,0,0.2)"
-                  strokeWidth={1}
-                />
-                <text
-                  x={rx}
-                  y={rowCount * ROW_H + 22}
-                  textAnchor="middle"
-                  style={{ fontSize: "10px" }}
-                  fill="rgba(0,0,0,0.45)"
-                  fontFamily="sans-serif"
-                >
-                  {realTime}
-                </text>
-              </g>
-            );
-          })}
+              return (
+                <g key={i}>
+                  <line
+                    x1={rx}
+                    y1={rowCount * ROW_H + 4}
+                    x2={rx}
+                    y2={rowCount * ROW_H + 10}
+                    stroke="rgba(0,0,0,0.2)"
+                    strokeWidth={1}
+                  />
+                  <text
+                    x={rx}
+                    y={rowCount * ROW_H + 22}
+                    textAnchor="middle"
+                    style={{ fontSize: "10px" }}
+                    fill="rgba(0,0,0,0.45)"
+                    fontFamily="sans-serif"
+                  >
+                    {realTime}
+                  </text>
+                </g>
+              );
+            })}
 
-          {/* <line
+            {/* <line
             x1={CHART_X}
             y1={rowCount * ROW_H + 4}
             x2={CHART_X + CHART_W}
@@ -324,7 +338,8 @@ const GanttChart = () => {
             points={`${playheadX - 5},4 ${playheadX + 5},4 ${playheadX},11`}
             fill="rgba(80,80,80,1)"
           /> */}
-        </svg>
+          </svg>
+        </Box>
       </Box>
 
       <Flex
@@ -332,7 +347,8 @@ const GanttChart = () => {
         gap={3}
         mt={2}
         overflow={"auto"}
-        h={"200px"}
+        minH={"100px"}
+        maxH={"200px"}
         bg={theme.colors.background}
         p={2}
         rounded={"15px"}

@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { Flex, Box } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Flex, Box, Portal } from "@chakra-ui/react";
+import GlassBox from "../GlassComponents/GlassBox";
 import GlassBox2 from "../GlassComponents/GlassBox2";
 import HeadingText from "../OtherUI/HeadingText";
 import CustomButton from "../OtherUI/CustomButton";
@@ -28,6 +29,8 @@ const Simulation = ({ scrollTargetRef }) => {
     pause,
     reset,
   } = useProcessStore();
+
+  const [isfullScreen, setFullScreen] = useState(false);
 
   useEffect(() => {
     if (!processes || processes.length === 0) {
@@ -67,6 +70,18 @@ const Simulation = ({ scrollTargetRef }) => {
 
   const handleReset = () => reset();
 
+  useEffect(() => {
+    if (isfullScreen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isfullScreen]);
+
   return (
     <Box
       minH="100vh"
@@ -91,7 +106,75 @@ const Simulation = ({ scrollTargetRef }) => {
           subtitle="Visualize and analyze CPU scheduling algorithms using Gantt charts"
         />
 
-        <GanttChart />
+        {!isfullScreen && (
+          <GanttChart
+            isfullScreen={isfullScreen}
+            setFullScreen={setFullScreen}
+          />
+        )}
+
+        {isfullScreen && (
+          <Portal>
+            <Box
+              position="fixed"
+              inset={0}
+              zIndex={9999}
+              h={"100vh"}
+              bg={"white"}
+              overflow={"hidden"}
+            >
+              <GanttChart
+                isfullScreen={isfullScreen}
+                setFullScreen={setFullScreen}
+              />
+              <GlassBox
+                justifyContent="center"
+                align="stretch"
+                flexWrap="wrap"
+                w="max-content  "
+                mx="auto"
+                gap={4}
+                blur="1px"
+                pb={4}
+                pt={0}
+                px={5}
+              >
+                <CustomButton
+                  text="Previous"
+                  onClick={handlePrevious}
+                  width="max-content"
+                  mt={4}
+                  iconSize="10px"
+                  icon={<FaBackward />}
+                />
+                <CustomButton
+                  text="Play / Pause"
+                  onClick={handlePlayPause}
+                  width="max-content"
+                  mt={4}
+                  iconSize="10px"
+                  icon={<PiPlayPauseFill />}
+                />
+                <CustomButton
+                  text="Next"
+                  onClick={handleNext}
+                  width="max-content"
+                  mt={4}
+                  iconSize="10px"
+                  icon={<FaForward />}
+                />
+                <CustomButton
+                  text="Reset"
+                  onClick={handleReset}
+                  width="max-content"
+                  mt={4}
+                  iconSize="10px"
+                  icon={<BiReset />}
+                />
+              </GlassBox>
+            </Box>
+          </Portal>
+        )}
 
         <Flex
           justifyContent="center"
