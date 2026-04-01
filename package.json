@@ -15,6 +15,7 @@
     "@syncfusion/ej2-react-charts": "^33.1.44",
     "@syncfusion/ej2-react-gantt": "^33.1.45",
     "framer-motion": "^12.38.0",
+    "liquid-glass-react": "^1.1.1",
     "next-themes": "^0.4.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

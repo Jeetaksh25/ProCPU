@@ -58,8 +58,6 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
     if (newAlgo === "RR") {
       setSchedulingType("preemptive");
       setTimeQuantum(2);
-    } else {
-      setSchedulingType("non-preemptive");
     }
   };
 
@@ -76,8 +74,6 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
     if (newAlgo === "RR") {
       setSchedulingType("preemptive");
       setTimeQuantum(2);
-    } else {
-      setSchedulingType("non-preemptive");
     }
   };
 

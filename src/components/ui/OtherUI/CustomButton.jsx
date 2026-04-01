@@ -10,7 +10,14 @@ const MotionButtonStyle = {};
 
 const MotionTextStyle = {};
 
-const CustomButton = ({ text, onClick, fontSize = "md", ...props }) => {
+const CustomButton = ({
+  text,
+  onClick,
+  icon,
+  iconSize,
+  fontSize = "md",
+  ...props
+}) => {
   return (
     <MotionButton
       px={6}
@@ -26,7 +33,18 @@ const CustomButton = ({ text, onClick, fontSize = "md", ...props }) => {
       animate={MotionButtonStyle.animate}
       transition={{ duration: 0.2, ease: "easeInOut" }}
       {...props}
+      flexDir={"row"}
+      gap={2}
+      display={"flex"}
+      alignItems={"center"}
     >
+      {icon && (
+        <Box
+          fontSize={iconSize}
+        >
+          {icon}
+        </Box>
+      )}
       <MotionText
         initial={MotionTextStyle.initial}
         animate={MotionTextStyle.animate}
