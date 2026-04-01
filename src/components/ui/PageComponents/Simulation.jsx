@@ -73,6 +73,7 @@ const Simulation = ({ scrollTargetRef }) => {
       justifyContent="center"
       alignItems="center"
       display="flex"
+      mt={10}
     >
       <GlassBox2
         direction="column"

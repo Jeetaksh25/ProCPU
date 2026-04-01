@@ -3,6 +3,7 @@ import { Box, Text, Flex } from "@chakra-ui/react";
 import GlassBox from "../GlassComponents/GlassBox";
 import { useProcessStore } from "../../../store/processStore";
 import { motion } from "framer-motion";
+import { theme } from "../../../theme/theme";
 
 const MotionBox = motion.create(Box);
 
@@ -125,6 +126,7 @@ const GanttChart = () => {
       minW="320px"
       w="100%"
       userSelect="none"
+      maxH="70vh"
     >
       <Flex align="center" gap={3} w={"95%"} mx="auto">
         <MotionBox
@@ -325,7 +327,16 @@ const GanttChart = () => {
         </svg>
       </Box>
 
-      <Flex flexWrap="wrap" gap={3} mt={2}>
+      <Flex
+        flexWrap="wrap"
+        gap={3}
+        mt={2}
+        overflow={"auto"}
+        h={"200px"}
+        bg={theme.colors.background}
+        p={2}
+        rounded={"15px"}
+      >
         {processIds.map((pid) => {
           const color = colorForId(pid);
 
@@ -369,7 +380,6 @@ const GanttChart = () => {
               boxShadow={isRunning ? `0 0 8px ${color}55` : "none"}
               transition="all 0.2s"
               minW="150px"
-              overflow={"auto"}
             >
               <Box
                 w="15px"
