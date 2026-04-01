@@ -93,8 +93,23 @@ const GanttChart = () => {
   const CHART_W = SVG_W - LABEL_W - RIGHT_PADDING;
   const SVG_H = rowCount * ROW_H + RULER_H + 8;
 
-  const xOf = (t) => CHART_X + (t / TOTAL) * CHART_W;
-  const wOf = (start, end) => ((end - start) / TOTAL) * CHART_W;
+  // const xOfplaybackHead = (t) => CHART_X + (t / TOTAL) * CHART_W;
+  // const wOfplaybackHead = (start, end) => ((end - start) / TOTAL) * CHART_W;
+
+  const xOf = (t) => {
+    const gridUnitTime = TOTAL / TICK_COUNT;
+    const snapped = Math.round(t / gridUnitTime);
+    return CHART_X + (snapped / TICK_COUNT) * CHART_W;
+  };
+  const wOf = (start, end) => {
+    const gridUnitTime = TOTAL / TICK_COUNT;
+
+    const snappedStart = Math.round(start / gridUnitTime);
+    const snappedEnd = Math.round(end / gridUnitTime);
+
+    return ((snappedEnd - snappedStart) / TICK_COUNT) * CHART_W;
+  };
+
   const yOf = (rowIdx) => rowIdx * ROW_H + 4;
 
   const playheadX = xOf(Math.min(currentTime, TOTAL));
@@ -158,6 +173,21 @@ const GanttChart = () => {
             overflow: "auto",
           }}
         >
+          {Array.from({ length: TICK_COUNT + 1 }).map((_, i) => {
+            const x = CHART_X + (i / TICK_COUNT) * CHART_W;
+
+            return (
+              <line
+                key={"grid-" + i}
+                x1={x}
+                y1={0}
+                x2={x}
+                y2={rowCount * ROW_H}
+                stroke="rgba(0,0,0,0.1)"
+                strokeWidth={1}
+              />
+            );
+          })}
           {processIds.map((pid, rowIdx) => {
             const color = colorForId(pid);
             const y = yOf(rowIdx);
@@ -184,22 +214,6 @@ const GanttChart = () => {
                   rx={4}
                   fill="rgba(0,0,0,0.04)"
                 />
-
-                {Array.from({ length: TICK_COUNT + 1 }).map((_, i) => {
-                  const x = CHART_X + (i / TICK_COUNT) * CHART_W;
-
-                  return (
-                    <line
-                      key={"grid-" + i}
-                      x1={x}
-                      y1={0}
-                      x2={x}
-                      y2={rowCount * ROW_H}
-                      stroke="rgba(0,0,0,0.01)"
-                      strokeWidth={1}
-                    />
-                  );
-                })}
 
                 {rowSegs.map((seg, si) => {
                   const sx = xOf(seg.scaledStart);
@@ -287,7 +301,7 @@ const GanttChart = () => {
             );
           })}
 
-          <line
+          {/* <line
             x1={CHART_X}
             y1={rowCount * ROW_H + 4}
             x2={CHART_X + CHART_W}
@@ -307,7 +321,7 @@ const GanttChart = () => {
           <polygon
             points={`${playheadX - 5},4 ${playheadX + 5},4 ${playheadX},11`}
             fill="rgba(80,80,80,1)"
-          />
+          /> */}
         </svg>
       </Box>
 

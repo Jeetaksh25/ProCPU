@@ -3,7 +3,7 @@ import { Flex, Box } from "@chakra-ui/react";
 import GlassBox2 from "../GlassComponents/GlassBox2";
 import HeadingText from "../OtherUI/HeadingText";
 import CustomButton from "../OtherUI/CustomButton";
-import GanttChart from "../Simulation/GantChart"; // ← fixed name
+import GanttChart from "../Simulation/GantChart";
 import { useProcessStore } from "../../../store/processStore";
 import { FaBackward, FaForward } from "react-icons/fa6";
 import { PiPlayPauseFill } from "react-icons/pi";
@@ -29,7 +29,6 @@ const Simulation = ({ scrollTargetRef }) => {
     reset,
   } = useProcessStore();
 
-  // Re-generate timeline whenever inputs change
   useEffect(() => {
     if (!processes || processes.length === 0) {
       setTimeline([]);
@@ -49,7 +48,6 @@ const Simulation = ({ scrollTargetRef }) => {
     reset();
   }, [processes, selectedAlgo, schedulingType, timeQuantum]);
 
-  // ── Playback controls ────────────────────────────────────────────────────
   const handlePlayPause = () => {
     if (isPlaying) pause();
     else play();
