@@ -52,8 +52,9 @@ const generateData = (algo) => {
   }
 };
 
-const AlgoPerformance = ({ selectedAlgo }) => {
-  const { processes, schedulingType, timeQuantum } = useProcessStore();
+const AlgoPerformance = () => {
+  const { processes, schedulingType, timeQuantum, selectedAlgo } =
+    useProcessStore();
 
   const realData = generateGraphData(
     selectedAlgo,

@@ -7,7 +7,6 @@ import { useState } from "react";
 import CustomButton from "../OtherUI/CustomButton";
 
 const AlgoInput = ({ scrollTargetRef }) => {
-  const [selectedAlgo, setSelectedAlgo] = useState("FCFS");
   const handleScroll = () => {
     scrollTargetRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -39,11 +38,8 @@ const AlgoInput = ({ scrollTargetRef }) => {
         />
 
         <Flex wrap="wrap" gap={6} justify="space-around">
-          <AlgoSelect
-            selectedAlgo={selectedAlgo}
-            setSelectedAlgo={setSelectedAlgo}
-          />
-          <AlgoPerformance selectedAlgo={selectedAlgo} />
+          <AlgoSelect />
+          <AlgoPerformance />
         </Flex>
 
         <CustomButton

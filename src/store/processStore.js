@@ -7,6 +7,21 @@ export const useProcessStore = create((set) => ({
   schedulingType: "non-preemptive",
   timeQuantum: 2,
 
+  timeline: [],
+  currentTime: 0,
+  isPlaying: false,
+
+  selectedAlgo: "FCFS",
+
+  setSelectedAlgo: (algo) => set({ selectedAlgo: algo }),
+
+  setTimeline: (timeline) => set({ timeline }),
+
+  setCurrentTime: (t) =>
+    set((state) => ({
+      currentTime: typeof t === "function" ? t(state.currentTime) : t,
+    })),
+
   setProcesses: (processes) =>
     set(() => ({
       processes,
@@ -23,8 +38,6 @@ export const useProcessStore = create((set) => ({
         },
       ],
     })),
-
-  clearProcesses: () => set({ processes: [] }),
 
   removeProcess: (id) =>
     set((state) => ({
@@ -51,4 +64,13 @@ export const useProcessStore = create((set) => ({
 
   setSchedulingType: (type) => set({ schedulingType: type }),
   setTimeQuantum: (q) => set({ timeQuantum: Number(q) }),
+
+  play: () => set({ isPlaying: true }),
+  pause: () => set({ isPlaying: false }),
+
+  reset: () =>
+    set({
+      currentTime: 0,
+      isPlaying: false,
+    }),
 }));

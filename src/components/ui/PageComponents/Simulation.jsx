@@ -1,34 +1,80 @@
+import { useEffect } from "react";
 import { Flex, Box } from "@chakra-ui/react";
-import GlassBox from "../GlassComponents/GlassBox";
-import HeadingText from "../OtherUI/HeadingText";
 import GlassBox2 from "../GlassComponents/GlassBox2";
+import HeadingText from "../OtherUI/HeadingText";
 import CustomButton from "../OtherUI/CustomButton";
-import GantChart from "../Simulation/GantChart";
-
-import { FaBackward } from "react-icons/fa6";
-import { FaForward } from "react-icons/fa6";
+import GanttChart from "../Simulation/GantChart"; // ← fixed name
+import { useProcessStore } from "../../../store/processStore";
+import { FaBackward, FaForward } from "react-icons/fa6";
 import { PiPlayPauseFill } from "react-icons/pi";
 import { BiReset } from "react-icons/bi";
+import {
+  generateTimeline,
+  normalizeTimeline,
+} from "../../../functions/algoRecommend";
 
 const Simulation = ({ scrollTargetRef }) => {
-  const handleScroll = () => {
-    scrollTargetRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+  const {
+    processes,
+    selectedAlgo,
+    schedulingType,
+    timeQuantum,
+    timeline,
+    currentTime,
+    isPlaying,
+    setTimeline,
+    setCurrentTime,
+    play,
+    pause,
+    reset,
+  } = useProcessStore();
+
+  // Re-generate timeline whenever inputs change
+  useEffect(() => {
+    if (!processes || processes.length === 0) {
+      setTimeline([]);
+      reset();
+      return;
+    }
+
+    const raw = generateTimeline(
+      selectedAlgo,
+      processes,
+      schedulingType,
+      timeQuantum
+    );
+
+    const normalized = normalizeTimeline(raw, 60);
+    setTimeline(normalized);
+    reset();
+  }, [processes, selectedAlgo, schedulingType, timeQuantum]);
+
+  // ── Playback controls ────────────────────────────────────────────────────
+  const handlePlayPause = () => {
+    if (isPlaying) pause();
+    else play();
   };
 
-  const handlePrevious = () => {};
-  const handleNext = () => {};
-  const handlePlayPause = () => {};
-  const handleReset = () => {};
+  const handleNext = () => {
+    const next = timeline.find((t) => t.scaledStart > currentTime);
+    if (next) setCurrentTime(next.scaledStart);
+  };
+
+  const handlePrevious = () => {
+    const prev = [...timeline]
+      .reverse()
+      .find((t) => t.scaledEnd <= currentTime && t.scaledStart < currentTime);
+    if (prev) setCurrentTime(prev.scaledStart);
+  };
+
+  const handleReset = () => reset();
 
   return (
     <Box
       minH="100vh"
-      justifyContent={"center"}
-      alignItems={"center"}
-      display={"flex"}
+      justifyContent="center"
+      alignItems="center"
+      display="flex"
     >
       <GlassBox2
         direction="column"
@@ -46,19 +92,14 @@ const Simulation = ({ scrollTargetRef }) => {
           subtitle="Visualize and analyze CPU scheduling algorithms using Gantt charts"
         />
 
-        <GantChart
-          handlePrevious={handlePrevious}
-          handleNext={handleNext}
-          handlePlayPause={handlePlayPause}
-          handleReset={handleReset}
-        />
+        <GanttChart />
 
         <Flex
           justifyContent="center"
           align="stretch"
           flexWrap="wrap"
-          w={"80%"}
-          mx={"auto"}
+          w="80%"
+          mx="auto"
           gap={4}
         >
           <CustomButton
@@ -66,15 +107,15 @@ const Simulation = ({ scrollTargetRef }) => {
             onClick={handlePrevious}
             width="max-content"
             mt={4}
-            iconSize={"10px"}
+            iconSize="10px"
             icon={<FaBackward />}
           />
           <CustomButton
-            text="Play/Pause"
+            text="Play / Pause"
             onClick={handlePlayPause}
             width="max-content"
             mt={4}
-            iconSize={"10px"}
+            iconSize="10px"
             icon={<PiPlayPauseFill />}
           />
           <CustomButton
@@ -82,7 +123,7 @@ const Simulation = ({ scrollTargetRef }) => {
             onClick={handleNext}
             width="max-content"
             mt={4}
-            iconSize={"10px"}
+            iconSize="10px"
             icon={<FaForward />}
           />
           <CustomButton
@@ -90,7 +131,7 @@ const Simulation = ({ scrollTargetRef }) => {
             onClick={handleReset}
             width="max-content"
             mt={4}
-            iconSize={"10px"}
+            iconSize="10px"
             icon={<BiReset />}
           />
         </Flex>

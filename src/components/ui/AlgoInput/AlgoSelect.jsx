@@ -28,14 +28,17 @@ const variants = {
   }),
 };
 
-const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
+const AlgoSelect = () => {
   const {
     processes,
-    setSchedulingType,
-    setTimeQuantum,
     schedulingType,
     timeQuantum,
+    setSchedulingType,
+    setTimeQuantum,
+    selectedAlgo,
+    setSelectedAlgo,
   } = useProcessStore();
+
   const recommended = getRecommendedAlgo(
     processes,
     schedulingType,
@@ -58,6 +61,9 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
     if (newAlgo === "RR") {
       setSchedulingType("preemptive");
       setTimeQuantum(2);
+    } else if (newAlgo === "FCFS") {
+      setSchedulingType("non-preemptive");
+      setTimeQuantum(0);
     }
   };
 
@@ -74,6 +80,9 @@ const AlgoSelect = ({ selectedAlgo, setSelectedAlgo }) => {
     if (newAlgo === "RR") {
       setSchedulingType("preemptive");
       setTimeQuantum(2);
+    } else if (newAlgo === "FCFS") {
+      setSchedulingType("non-preemptive");
+      setTimeQuantum(0);
     }
   };
 

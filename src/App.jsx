@@ -25,7 +25,7 @@ const App = () => {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
   return (
-    <Box w="100%" h="100%" bg={theme.colors.background} position="relative">
+    <Box w="100%" h="100%" position="relative">
       <Background />
 
       <Box position="relative" zIndex={1} pb={20}>
