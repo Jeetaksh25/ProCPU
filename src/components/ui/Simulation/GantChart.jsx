@@ -4,6 +4,8 @@ import GlassBox from "../GlassComponents/GlassBox";
 import { useProcessStore } from "../../../store/processStore";
 import { motion } from "framer-motion";
 import { theme } from "../../../theme/theme";
+import { ALGO_META } from "../../utils/statsConfig";
+import HeadingText from "../OtherUI/HeadingText";
 
 const MotionBox = motion.create(Box);
 
@@ -325,20 +327,15 @@ const StatusDot = memo(({ color, isActive }) => (
   />
 ));
 
-const HeaderStats = memo(({ totalRef, progressRef }) => (
-  <>
-    <Text ref={totalRef} color="black" fontSize="sm" ml="auto">
-      Time = 0.0s
-    </Text>
-    <Text ref={progressRef} color="black" fontSize="sm">
-      Progress = 0.0%
-    </Text>
-  </>
-));
-
 const GanttChart = ({ isfullScreen, setFullScreen }) => {
-  const { timeline, currentTime, isPlaying, setCurrentTime, processes } =
-    useProcessStore();
+  const {
+    timeline,
+    currentTime,
+    isPlaying,
+    setCurrentTime,
+    processes,
+    selectedAlgo,
+  } = useProcessStore();
 
   const timeTextRef = useRef(null);
   const progressTextRef = useRef(null);
@@ -452,20 +449,37 @@ const GanttChart = ({ isfullScreen, setFullScreen }) => {
       userSelect="none"
       maxH={isfullScreen ? "100vh" : "70vh"}
     >
-      <Flex align="center" gap={3} w="95%" mx="auto">
-        <StatusDot color={dotColor} isActive={!!currentTask} />
-        <Text color={dotColor} fontSize="md" fontWeight={500}>
-          {currentTask ? `Running: ${currentTask.name}` : "Idle"}
-        </Text>
-        <Text ref={timeTextRef} color="black" fontSize="sm" ml="auto">
-          Time = {currentTime.toFixed(1)}s
-        </Text>
-        <Text ref={progressTextRef} color="black" fontSize="sm">
-          Progress = {((currentTime / TOTAL) * 100).toFixed(1)}%
-        </Text>
-        <Button variant="subtle" onClick={handleFullScreen}>
-          {isfullScreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-        </Button>
+      <Flex align="center" w="95%" mx="auto" px={4}>
+        <Flex flex={1} gap={2} align="center" minW="0">
+          <StatusDot color={dotColor} isActive={!!currentTask} />
+
+          <Text color={dotColor} fontSize="md" fontWeight={500} noOfLines={1}>
+            {currentTask ? `Running: ${currentTask.name}` : "Idle"}
+          </Text>
+        </Flex>
+
+        <Flex flex={1} justify="center">
+          <HeadingText
+            title={ALGO_META[selectedAlgo].name}
+            align="center"
+            mb="0px"
+            variant="card"
+          />
+        </Flex>
+
+        <Flex flex={1} justify="flex-end" align="center" gap={4}>
+          <Text ref={timeTextRef} color="black" fontSize="sm">
+            Time = {currentTime.toFixed(1)}s
+          </Text>
+
+          <Text ref={progressTextRef} color="black" fontSize="sm">
+            Progress = {((currentTime / TOTAL) * 100).toFixed(1)}%
+          </Text>
+
+          <Button variant="subtle" onClick={handleFullScreen}>
+            {isfullScreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+          </Button>
+        </Flex>
       </Flex>
 
       <Box

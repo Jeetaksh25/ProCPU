@@ -104,13 +104,13 @@ const StatsPage = () => {
   ];
 
   return (
-    <Box w="100%" minH="100vh" display="flex" flexDir="column" p={6} mt={20}>
+    <Box w="90%" mx="auto" minH="100vh" display="flex" flexDir="column" p={6} mt={20} gap={10}>
       <HeadingText
         title="Statistics"
         subtitle="Analyze scheduling performance and metrics"
-        variant="section"
+        variant="hero"
       />
-      <Box w="100%">
+      <Box w="90%" mx={'auto'}>
         <StatsCards
           avgWT={avgWT}
           avgTAT={avgTAT}
@@ -119,7 +119,9 @@ const StatsPage = () => {
           reasons={reasons}
         />
       </Box>
+
       <StatsTable title="Process Table" data={tableData} />
+
       <Flex gap={6} wrap="wrap" mb={6}>
         <BarChart
           title="Waiting Time per Process"
@@ -131,6 +133,7 @@ const StatsPage = () => {
 
         <PieChart title="Time Distribution" data={pieData} showLabels />
       </Flex>
+
       <Flex gap={6} wrap="wrap">
         <LineChart
           title="Turnaround Time per Process"

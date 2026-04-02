@@ -20,7 +20,7 @@ const PieChart = ({
   chartProps = {},
 }) => {
   return (
-    <GlassBox flex="1" p={6} minW="300px" flexDir="column" blur="1px">
+    <GlassBox flex="1" p={6} minW="300px" flexDir="column" blur="4px">
       <HeadingText title={title} variant="card" />
 
       <AccumulationChartComponent

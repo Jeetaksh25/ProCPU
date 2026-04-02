@@ -27,7 +27,7 @@ import {
     const dotFill = markerFill ?? theme.colors.primary;
   
     return (
-      <GlassBox flex="1" p={6} minW="300px" flexDir="column">
+      <GlassBox flex="1" p={6} minW="300px" flexDir="column" blur="4px">
         <HeadingText title={title} variant="card" />
   
         <ChartComponent

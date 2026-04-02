@@ -49,7 +49,7 @@ const NavBar = () => {
       transform="translateX(-50%)"
       zIndex={999}
       w={{ base: "90%", md: "60%" }}
-      blur="10px"
+      blur="5px"
       px={6}
       pt={2}
       pb={3}

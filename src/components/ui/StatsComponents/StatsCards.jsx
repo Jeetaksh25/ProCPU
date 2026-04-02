@@ -87,7 +87,7 @@ const StatsCard = ({
   ];
 
   return (
-    <Grid templateColumns="repeat(2, 1fr)" gap={3} my={6} w="100%">
+    <Grid templateColumns="repeat(2, 1fr)" gap={10} my={6} w="100%">
       {STATS_CONFIG.map((card) => (
         <StatCardItem key={card.id} card={card} />
       ))}
