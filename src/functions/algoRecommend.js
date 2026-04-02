@@ -12,17 +12,18 @@ export const runSchedulingAlgo = (
   const n = procs.length;
 
   let waitingTimes = {};
+  let completionTimes = {};
   let remaining = {};
-  let arrivalMap = {};
 
   procs.forEach((p) => {
     remaining[p.id] = p.burst;
-    arrivalMap[p.id] = p.arrival;
     waitingTimes[p.id] = 0;
+    completionTimes[p.id] = 0;
   });
 
   let queue = [];
 
+  // ── Non-preemptive (except RR) ───────────────────────────────────────────────
   if (algo !== "RR" && schedulingType === "non-preemptive") {
     switch (algo) {
       case "SJF":
@@ -36,16 +37,16 @@ export const runSchedulingAlgo = (
     }
 
     let currentTime = 0;
-
     procs.forEach((p) => {
       const start = Math.max(currentTime, p.arrival);
       waitingTimes[p.id] = start - p.arrival;
       currentTime = start + p.burst;
+      completionTimes[p.id] = currentTime;
     });
+
+  // ── Round Robin ──────────────────────────────────────────────────────────────
   } else if (algo === "RR") {
-    if (!timeQuantum || timeQuantum <= 0) {
-      timeQuantum = 1;
-    }
+    if (!timeQuantum || timeQuantum <= 0) timeQuantum = 1;
     procs.sort((a, b) => a.arrival - b.arrival);
 
     let i = 0;
@@ -58,17 +59,12 @@ export const runSchedulingAlgo = (
         i++;
       }
 
-      if (queue.length === 0) {
-        time++;
-        continue;
-      }
+      if (queue.length === 0) { time++; continue; }
 
       const p = queue.shift();
-
       const exec = Math.min(timeQuantum, remaining[p.id]);
 
       waitingTimes[p.id] += time - (p.lastExecuted || p.arrival);
-
       time += exec;
       remaining[p.id] -= exec;
       p.lastExecuted = time;
@@ -82,11 +78,12 @@ export const runSchedulingAlgo = (
         queue.push(p);
       } else {
         completed++;
+        completionTimes[p.id] = time;
       }
     }
-  } else if (algo === "SJF" && schedulingType === "preemptive") {
-    let visited = Array(n).fill(false);
 
+  // ── Preemptive SJF (SRTF) ────────────────────────────────────────────────────
+  } else if (algo === "SJF" && schedulingType === "preemptive") {
     while (completed < n) {
       let idx = -1;
       let minBurst = Infinity;
@@ -102,21 +99,20 @@ export const runSchedulingAlgo = (
         }
       }
 
-      if (idx === -1) {
-        time++;
-        continue;
-      }
+      if (idx === -1) { time++; continue; }
 
       remaining[procs[idx].id]--;
       time++;
 
       if (remaining[procs[idx].id] === 0) {
         completed++;
-        const finish = time;
+        completionTimes[procs[idx].id] = time;
         waitingTimes[procs[idx].id] =
-          finish - procs[idx].arrival - procs[idx].burst;
+          time - procs[idx].arrival - procs[idx].burst;
       }
     }
+
+  // ── Preemptive Priority ──────────────────────────────────────────────────────
   } else if (algo === "Priority" && schedulingType === "preemptive") {
     while (completed < n) {
       let idx = -1;
@@ -133,31 +129,46 @@ export const runSchedulingAlgo = (
         }
       }
 
-      if (idx === -1) {
-        time++;
-        continue;
-      }
+      if (idx === -1) { time++; continue; }
 
       remaining[procs[idx].id]--;
       time++;
 
       if (remaining[procs[idx].id] === 0) {
         completed++;
-        const finish = time;
+        completionTimes[procs[idx].id] = time;
         waitingTimes[procs[idx].id] =
-          finish - procs[idx].arrival - procs[idx].burst;
+          time - procs[idx].arrival - procs[idx].burst;
       }
     }
   }
 
-  const graph = procs.map((p, i) => ({
-    x: p.name || `P${i + 1}`,
-    y: waitingTimes[p.id],
+  // ── Build per-process result rows ────────────────────────────────────────────
+  const resultProcesses = procs.map((p) => {
+    const ct  = completionTimes[p.id] ?? 0;
+    const wt  = waitingTimes[p.id]    ?? 0;
+    const tat = ct - p.arrival;          // TAT = CT - Arrival
+
+    return {
+      id:            p.name || p.id,     // use human-readable name for table PID
+      arrivalTime:   p.arrival,
+      burstTime:     p.burst,
+      completionTime: ct,
+      turnAroundTime: tat,
+      waitingTime:   wt,
+    };
+  });
+
+  // ── Aggregates ───────────────────────────────────────────────────────────────
+  const avgWT  = resultProcesses.reduce((s, p) => s + p.waitingTime,    0) / n;
+  const avgTAT = resultProcesses.reduce((s, p) => s + p.turnAroundTime, 0) / n;
+
+  const graph = resultProcesses.map((p) => ({
+    x: p.id,
+    y: p.waitingTime,
   }));
 
-  const avgWT = Object.values(waitingTimes).reduce((a, b) => a + b, 0) / n;
-
-  return { graph, avgWT };
+  return { processes: resultProcesses, graph, avgWT, avgTAT };
 };
 
 export const getRecommendedAlgo = (
@@ -176,15 +187,8 @@ export const getRecommendedAlgo = (
   let bestWT = Infinity;
 
   algos.forEach((algo) => {
-    const result = runSchedulingAlgo(
-      algo,
-      processes,
-      schedulingType,
-      timeQuantum
-    );
-
+    const result = runSchedulingAlgo(algo, processes, schedulingType, timeQuantum);
     if (!result) return;
-
     if (result.avgWT < bestWT) {
       bestWT = result.avgWT;
       bestAlgo = algo;
@@ -194,329 +198,168 @@ export const getRecommendedAlgo = (
   return bestAlgo;
 };
 
-export const generateGraphData = (
-  algo,
-  processes,
-  schedulingType,
-  timeQuantum
-) => {
-  const result = runSchedulingAlgo(
-    algo,
-    processes,
-    schedulingType,
-    timeQuantum
-  );
-
+export const generateGraphData = (algo, processes, schedulingType, timeQuantum) => {
+  const result = runSchedulingAlgo(algo, processes, schedulingType, timeQuantum);
   if (!result) return null;
-
   return result.graph;
 };
 
-
-
-
-
-export const generateTimeline = (
-  algo,
-  processes,
-  schedulingType,
-  timeQuantum
-) => {
+export const generateTimeline = (algo, processes, schedulingType, timeQuantum) => {
   if (!processes || processes.length === 0) return [];
 
   const isPreemptive = schedulingType === "preemptive";
-
   let procs = processes.map((p) => ({ ...p }));
   let time = 0;
   let remaining = {};
   let timeline = [];
 
-  procs.forEach((p) => {
-    remaining[p.id] = p.burst;
-  });
-
+  procs.forEach((p) => { remaining[p.id] = p.burst; });
   procs.sort((a, b) => a.arrival - b.arrival);
 
-  // ── FCFS — always non-preemptive ────────────────────────────────────────────
+  // ── FCFS ─────────────────────────────────────────────────────────────────────
   if (algo === "FCFS") {
-    let queue = [];
-    let i = 0;
-
+    let queue = [], i = 0;
     while (true) {
-      while (i < procs.length && procs[i].arrival <= time) {
-        queue.push(procs[i]);
-        i++;
-      }
-
+      while (i < procs.length && procs[i].arrival <= time) queue.push(procs[i++]);
       if (queue.length === 0) {
         if (i >= procs.length) break;
         time = procs[i].arrival;
         continue;
       }
-
       const current = queue.shift();
       const start = time;
       const end = time + remaining[current.id];
-
-      timeline.push({
-        id: current.id,
-        name: current.name || `P${current.id.slice(0, 4)}`,
-        start,
-        end,
-      });
-
+      timeline.push({ id: current.id, name: current.name || `P${current.id.slice(0,4)}`, start, end });
       time = end;
       remaining[current.id] = 0;
-
-      // Admit any processes that arrived while current was running
-      while (i < procs.length && procs[i].arrival <= time) {
-        queue.push(procs[i]);
-        i++;
-      }
+      while (i < procs.length && procs[i].arrival <= time) queue.push(procs[i++]);
     }
-
     return timeline;
   }
 
-  // ── Round Robin — always preemptive ─────────────────────────────────────────
+  // ── Round Robin ──────────────────────────────────────────────────────────────
   if (algo === "RR") {
-    let queue = [];
-    let i = 0;
-
+    let queue = [], i = 0;
     while (true) {
-      while (i < procs.length && procs[i].arrival <= time) {
-        queue.push(procs[i]);
-        i++;
-      }
-
+      while (i < procs.length && procs[i].arrival <= time) queue.push(procs[i++]);
       if (queue.length === 0) {
         if (i >= procs.length) break;
         time = procs[i].arrival;
         continue;
       }
-
       const current = queue.shift();
       const execTime = Math.min(timeQuantum, remaining[current.id]);
       const start = time;
       const end = time + execTime;
-
-      timeline.push({
-        id: current.id,
-        name: current.name || `P${current.id.slice(0, 4)}`,
-        start,
-        end,
-      });
-
+      timeline.push({ id: current.id, name: current.name || `P${current.id.slice(0,4)}`, start, end });
       time = end;
       remaining[current.id] -= execTime;
-
-      while (i < procs.length && procs[i].arrival <= time) {
-        queue.push(procs[i]);
-        i++;
-      }
-
-      if (remaining[current.id] > 0) {
-        queue.push(current);
-      }
+      while (i < procs.length && procs[i].arrival <= time) queue.push(procs[i++]);
+      if (remaining[current.id] > 0) queue.push(current);
     }
-
     return timeline;
   }
 
-  // ── SJF ─────────────────────────────────────────────────────────────────────
+  // ── SJF ──────────────────────────────────────────────────────────────────────
   if (algo === "SJF") {
     if (!isPreemptive) {
-      // Non-preemptive SJF: pick shortest job from ready queue, run to completion
-      let queue = [];
-      let i = 0;
-
+      let queue = [], i = 0;
       while (true) {
-        while (i < procs.length && procs[i].arrival <= time) {
-          queue.push(procs[i]);
-          i++;
-        }
-
+        while (i < procs.length && procs[i].arrival <= time) queue.push(procs[i++]);
         if (queue.length === 0) {
           if (i >= procs.length) break;
           time = procs[i].arrival;
           continue;
         }
-
         queue.sort((a, b) => remaining[a.id] - remaining[b.id]);
         const current = queue.shift();
         const start = time;
         const end = time + remaining[current.id];
-
-        timeline.push({
-          id: current.id,
-          name: current.name || `P${current.id.slice(0, 4)}`,
-          start,
-          end,
-        });
-
+        timeline.push({ id: current.id, name: current.name || `P${current.id.slice(0,4)}`, start, end });
         time = end;
         remaining[current.id] = 0;
-
-        while (i < procs.length && procs[i].arrival <= time) {
-          queue.push(procs[i]);
-          i++;
-        }
+        while (i < procs.length && procs[i].arrival <= time) queue.push(procs[i++]);
       }
     } else {
-      // Preemptive SJF (SRTF): at every tick, run the process with shortest remaining time
-      const totalBurst = procs.reduce((s, p) => s + p.burst, 0);
-      const lastArrival = procs[procs.length - 1].arrival;
-      const maxTime = lastArrival + totalBurst + 1;
-      let i = 0;
+      const totalBurst   = procs.reduce((s, p) => s + p.burst, 0);
+      const lastArrival  = procs[procs.length - 1].arrival;
+      const maxTime      = lastArrival + totalBurst + 1;
 
       while (time < maxTime) {
-        const ready = procs.filter(
-          (p) => p.arrival <= time && remaining[p.id] > 0
-        );
-
+        const ready = procs.filter((p) => p.arrival <= time && remaining[p.id] > 0);
         if (ready.length === 0) {
           if (procs.every((p) => remaining[p.id] === 0)) break;
-          time++;
-          continue;
+          time++; continue;
         }
-
         ready.sort((a, b) => remaining[a.id] - remaining[b.id]);
-        const current = ready[0];
-
-        // Find when the next process arrives (to limit this slice)
-        const nextArrival = procs.find(
-          (p) => p.arrival > time && remaining[p.id] > 0
-        );
-        const sliceLimit = nextArrival
+        const current     = ready[0];
+        const nextArrival = procs.find((p) => p.arrival > time && remaining[p.id] > 0);
+        const sliceLimit  = nextArrival
           ? Math.min(remaining[current.id], nextArrival.arrival - time)
           : remaining[current.id];
-
         const execTime = Math.max(1, sliceLimit);
-        const start = time;
-        const end = time + execTime;
-
-        // Merge with last segment if same process
-        if (
-          timeline.length > 0 &&
-          timeline[timeline.length - 1].id === current.id &&
-          timeline[timeline.length - 1].end === start
-        ) {
-          timeline[timeline.length - 1].end = end;
+        const start = time, end = time + execTime;
+        if (timeline.length > 0 && timeline[timeline.length-1].id === current.id && timeline[timeline.length-1].end === start) {
+          timeline[timeline.length-1].end = end;
         } else {
-          timeline.push({
-            id: current.id,
-            name: current.name || `P${current.id.slice(0, 4)}`,
-            start,
-            end,
-          });
+          timeline.push({ id: current.id, name: current.name || `P${current.id.slice(0,4)}`, start, end });
         }
-
         remaining[current.id] -= execTime;
         time = end;
-
         if (procs.every((p) => remaining[p.id] === 0)) break;
       }
     }
-
     return timeline;
   }
 
   // ── Priority ─────────────────────────────────────────────────────────────────
   if (algo === "Priority") {
     if (!isPreemptive) {
-      // Non-preemptive Priority
-      let queue = [];
-      let i = 0;
-
+      let queue = [], i = 0;
       while (true) {
-        while (i < procs.length && procs[i].arrival <= time) {
-          queue.push(procs[i]);
-          i++;
-        }
-
+        while (i < procs.length && procs[i].arrival <= time) queue.push(procs[i++]);
         if (queue.length === 0) {
           if (i >= procs.length) break;
           time = procs[i].arrival;
           continue;
         }
-
         queue.sort((a, b) => a.priority - b.priority);
         const current = queue.shift();
-        const start = time;
-        const end = time + remaining[current.id];
-
-        timeline.push({
-          id: current.id,
-          name: current.name || `P${current.id.slice(0, 4)}`,
-          start,
-          end,
-        });
-
+        const start = time, end = time + remaining[current.id];
+        timeline.push({ id: current.id, name: current.name || `P${current.id.slice(0,4)}`, start, end });
         time = end;
         remaining[current.id] = 0;
-
-        while (i < procs.length && procs[i].arrival <= time) {
-          queue.push(procs[i]);
-          i++;
-        }
+        while (i < procs.length && procs[i].arrival <= time) queue.push(procs[i++]);
       }
     } else {
-      // Preemptive Priority: at every tick, run the highest-priority ready process
-      const totalBurst = procs.reduce((s, p) => s + p.burst, 0);
+      const totalBurst  = procs.reduce((s, p) => s + p.burst, 0);
       const lastArrival = procs[procs.length - 1].arrival;
-      const maxTime = lastArrival + totalBurst + 1;
+      const maxTime     = lastArrival + totalBurst + 1;
 
       while (time < maxTime) {
-        const ready = procs.filter(
-          (p) => p.arrival <= time && remaining[p.id] > 0
-        );
-
+        const ready = procs.filter((p) => p.arrival <= time && remaining[p.id] > 0);
         if (ready.length === 0) {
           if (procs.every((p) => remaining[p.id] === 0)) break;
-          time++;
-          continue;
+          time++; continue;
         }
-
         ready.sort((a, b) => a.priority - b.priority);
-        const current = ready[0];
-
-        // Limit slice to next higher-priority arrival
-        const nextPreemptor = procs.find(
-          (p) =>
-            p.arrival > time &&
-            remaining[p.id] > 0 &&
-            p.priority < current.priority
-        );
-        const sliceLimit = nextPreemptor
+        const current       = ready[0];
+        const nextPreemptor = procs.find((p) => p.arrival > time && remaining[p.id] > 0 && p.priority < current.priority);
+        const sliceLimit    = nextPreemptor
           ? Math.min(remaining[current.id], nextPreemptor.arrival - time)
           : remaining[current.id];
-
         const execTime = Math.max(1, sliceLimit);
-        const start = time;
-        const end = time + execTime;
-
-        if (
-          timeline.length > 0 &&
-          timeline[timeline.length - 1].id === current.id &&
-          timeline[timeline.length - 1].end === start
-        ) {
-          timeline[timeline.length - 1].end = end;
+        const start = time, end = time + execTime;
+        if (timeline.length > 0 && timeline[timeline.length-1].id === current.id && timeline[timeline.length-1].end === start) {
+          timeline[timeline.length-1].end = end;
         } else {
-          timeline.push({
-            id: current.id,
-            name: current.name || `P${current.id.slice(0, 4)}`,
-            start,
-            end,
-          });
+          timeline.push({ id: current.id, name: current.name || `P${current.id.slice(0,4)}`, start, end });
         }
-
         remaining[current.id] -= execTime;
         time = end;
-
         if (procs.every((p) => remaining[p.id] === 0)) break;
       }
     }
-
     return timeline;
   }
 
@@ -525,15 +368,12 @@ export const generateTimeline = (
 
 export const normalizeTimeline = (timeline, totalDuration = 60) => {
   if (!timeline || !timeline.length) return [];
-
   const totalTime = timeline[timeline.length - 1].end;
   if (totalTime === 0) return [];
-
   const scale = totalDuration / totalTime;
-
   return timeline.map((t) => ({
     ...t,
     scaledStart: parseFloat((t.start * scale).toFixed(4)),
-    scaledEnd: parseFloat((t.end * scale).toFixed(4)),
+    scaledEnd:   parseFloat((t.end   * scale).toFixed(4)),
   }));
 };

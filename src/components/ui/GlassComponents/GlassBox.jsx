@@ -46,6 +46,7 @@ const GlassBox = ({
   initial,
   animate,
   exit,
+  shadowColor,
   ...props
 }) => {
   return (
@@ -68,7 +69,9 @@ const GlassBox = ({
       boxShadow={`
         inset 0 1px 0 rgba(255,255,255,0.15),
         inset 0 -2px 6px rgba(0,0,0,0.4),
-        0 8px 32px rgba(0,0,0,0.2)
+        0 8px 32px ${
+          shadowColor ? hexToRgba(shadowColor, 0.25) : "rgba(0,0,0,0.2)"
+        }
       `}
       _before={beforeStyles(radius)}
       _after={afterStyles(radius)}
