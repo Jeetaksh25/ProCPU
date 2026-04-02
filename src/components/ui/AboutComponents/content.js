@@ -80,7 +80,7 @@ export const ALGOS = [
     title: "Shortest Job First (SJF)",
     formula: "Select process with minimum Burst Time",
     preemptive: false,
-    color: "#a78bfa",
+    color: "#fbbf24",
     pros: [
       "Provably optimal average waiting time among non-preemptive algorithms.",
       "Efficient for batch systems where burst times are known.",

@@ -1,5 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 import HeadingText from "../components/ui/OtherUI/HeadingText";
 import { useProcessStore } from "../store/processStore";
 import { generateSampleProcesses } from "../functions/sampeData";
@@ -14,6 +15,25 @@ import StatsTable from "../components/ui/StatsComponents/StatsTable";
 import BarChart from "../components/ui/StatsComponents/BarChart";
 import PieChart from "../components/ui/StatsComponents/PieChart";
 import LineChart from "../components/ui/StatsComponents/LineChart";
+
+const MotionBox = motion(Box);
+const MotionFlex = motion(Flex);
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
+
+const staggerContainer = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1 },
+  },
+};
 
 const StatsPage = () => {
   const { processes, selectedAlgo, schedulingType, timeQuantum, setProcesses } =
@@ -87,21 +107,6 @@ const StatsPage = () => {
       text: `Burst: ${totalBT}`,
     },
   ];
-  const summaryStats = [
-    {
-      label: "Avg WT",
-      value: `${avgWT.toFixed(2)} ms`,
-      description: "Average Waiting Time",
-    },
-    { label: "Avg TAT", value: `${avgTAT.toFixed(2)} ms`, description: "" },
-    { label: "Algo", value: selectedAlgo, description: "" },
-    {
-      label: "Best",
-      value: recommended ?? "--",
-      color: "green.300",
-      description: "",
-    },
-  ];
 
   return (
     <Box
@@ -114,44 +119,86 @@ const StatsPage = () => {
       mt={20}
       gap={20}
     >
-      <Box w="90%" mx={"auto"} display="flex" flexDir="column">
-        <HeadingText
-          title="Statistics"
-          subtitle="Analyze scheduling performance and metrics"
-          variant="hero"
-        />
-        <StatsCards
-          avgWT={avgWT}
-          avgTAT={avgTAT}
-          selectedAlgo={selectedAlgo}
-          recommended={recommended}
-          reasons={reasons}
-        />
-      </Box>
+      <MotionBox
+        w="90%"
+        mx="auto"
+        display="flex"
+        flexDir="column"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        <MotionBox variants={fadeUp} custom={0}>
+          <HeadingText
+            title="Statistics"
+            subtitle="Analyze scheduling performance and metrics"
+            variant="hero"
+          />
+        </MotionBox>
 
-      <StatsTable title="Process Table" data={tableData} />
+        <MotionBox variants={fadeUp} custom={1}>
+          <StatsCards
+            avgWT={avgWT}
+            avgTAT={avgTAT}
+            selectedAlgo={selectedAlgo}
+            recommended={recommended}
+            reasons={reasons}
+          />
+        </MotionBox>
+      </MotionBox>
 
-      <Flex gap={6} wrap="wrap" mb={6}>
-        <BarChart
-          title="Waiting Time per Process"
-          data={barData}
-          xTitle="Process"
-          yTitle="Waiting Time (ms)"
-          seriesName="Waiting Time"
-        />
+      <MotionBox
+        variants={fadeUp}
+        custom={0}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
+        <StatsTable title="Process Table" data={tableData} />
+      </MotionBox>
 
-        <PieChart title="Time Distribution" data={pieData} showLabels />
-      </Flex>
+      <MotionFlex
+        gap={6}
+        wrap="wrap"
+        mb={6}
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
+        <MotionBox variants={fadeUp} custom={0} flex="1" minW="280px">
+          <BarChart
+            title="Waiting Time per Process"
+            data={barData}
+            xTitle="Process"
+            yTitle="Waiting Time (ms)"
+            seriesName="Waiting Time"
+          />
+        </MotionBox>
 
-      <Flex gap={6} wrap="wrap">
-        <LineChart
-          title="Turnaround Time per Process"
-          data={lineData}
-          xTitle="Process"
-          yTitle="Turnaround Time (ms)"
-          seriesName="TAT"
-        />
-      </Flex>
+        <MotionBox variants={fadeUp} custom={1} flex="1" minW="280px">
+          <PieChart title="Time Distribution" data={pieData} showLabels />
+        </MotionBox>
+      </MotionFlex>
+
+      <MotionFlex
+        gap={6}
+        wrap="wrap"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+      >
+        <MotionBox variants={fadeUp} custom={0} flex="1" minW="280px">
+          <LineChart
+            title="Turnaround Time per Process"
+            data={lineData}
+            xTitle="Process"
+            yTitle="Turnaround Time (ms)"
+            seriesName="TAT"
+          />
+        </MotionBox>
+      </MotionFlex>
     </Box>
   );
 };
