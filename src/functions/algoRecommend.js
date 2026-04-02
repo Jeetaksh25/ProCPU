@@ -23,7 +23,6 @@ export const runSchedulingAlgo = (
 
   let queue = [];
 
-  // ── Non-preemptive (except RR) ───────────────────────────────────────────────
   if (algo !== "RR" && schedulingType === "non-preemptive") {
     switch (algo) {
       case "SJF":
@@ -44,7 +43,6 @@ export const runSchedulingAlgo = (
       completionTimes[p.id] = currentTime;
     });
 
-  // ── Round Robin ──────────────────────────────────────────────────────────────
   } else if (algo === "RR") {
     if (!timeQuantum || timeQuantum <= 0) timeQuantum = 1;
     procs.sort((a, b) => a.arrival - b.arrival);
@@ -82,7 +80,6 @@ export const runSchedulingAlgo = (
       }
     }
 
-  // ── Preemptive SJF (SRTF) ────────────────────────────────────────────────────
   } else if (algo === "SJF" && schedulingType === "preemptive") {
     while (completed < n) {
       let idx = -1;
@@ -112,7 +109,6 @@ export const runSchedulingAlgo = (
       }
     }
 
-  // ── Preemptive Priority ──────────────────────────────────────────────────────
   } else if (algo === "Priority" && schedulingType === "preemptive") {
     while (completed < n) {
       let idx = -1;
@@ -143,14 +139,13 @@ export const runSchedulingAlgo = (
     }
   }
 
-  // ── Build per-process result rows ────────────────────────────────────────────
   const resultProcesses = procs.map((p) => {
     const ct  = completionTimes[p.id] ?? 0;
     const wt  = waitingTimes[p.id]    ?? 0;
-    const tat = ct - p.arrival;          // TAT = CT - Arrival
+    const tat = ct - p.arrival;
 
     return {
-      id:            p.name || p.id,     // use human-readable name for table PID
+      id:            p.name || p.id,
       arrivalTime:   p.arrival,
       burstTime:     p.burst,
       completionTime: ct,
@@ -159,7 +154,6 @@ export const runSchedulingAlgo = (
     };
   });
 
-  // ── Aggregates ───────────────────────────────────────────────────────────────
   const avgWT  = resultProcesses.reduce((s, p) => s + p.waitingTime,    0) / n;
   const avgTAT = resultProcesses.reduce((s, p) => s + p.turnAroundTime, 0) / n;
 
@@ -216,7 +210,6 @@ export const generateTimeline = (algo, processes, schedulingType, timeQuantum) =
   procs.forEach((p) => { remaining[p.id] = p.burst; });
   procs.sort((a, b) => a.arrival - b.arrival);
 
-  // ── FCFS ─────────────────────────────────────────────────────────────────────
   if (algo === "FCFS") {
     let queue = [], i = 0;
     while (true) {
@@ -237,7 +230,6 @@ export const generateTimeline = (algo, processes, schedulingType, timeQuantum) =
     return timeline;
   }
 
-  // ── Round Robin ──────────────────────────────────────────────────────────────
   if (algo === "RR") {
     let queue = [], i = 0;
     while (true) {
@@ -260,7 +252,6 @@ export const generateTimeline = (algo, processes, schedulingType, timeQuantum) =
     return timeline;
   }
 
-  // ── SJF ──────────────────────────────────────────────────────────────────────
   if (algo === "SJF") {
     if (!isPreemptive) {
       let queue = [], i = 0;
@@ -312,7 +303,6 @@ export const generateTimeline = (algo, processes, schedulingType, timeQuantum) =
     return timeline;
   }
 
-  // ── Priority ─────────────────────────────────────────────────────────────────
   if (algo === "Priority") {
     if (!isPreemptive) {
       let queue = [], i = 0;
