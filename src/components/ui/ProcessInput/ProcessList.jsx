@@ -49,7 +49,7 @@ const ProcessListItem = ({ p, removeProcess, setSelected, isSelected }) => {
       onClick={() => setSelected(p.id)}
       w="100%"
       hoverColor={theme.colors.accent}
-      color={isSelected ? theme.colors.primary : undefined}
+      color={theme.colors.primary}
       bg={isSelected ? "rgba(124,58,237,0.08)" : "rgba(255,255,255,0.02)"}
       border={
         isSelected

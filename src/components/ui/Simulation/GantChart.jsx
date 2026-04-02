@@ -476,7 +476,7 @@ const GanttChart = ({ isfullScreen, setFullScreen }) => {
             Progress = {((currentTime / TOTAL) * 100).toFixed(1)}%
           </Text>
 
-          <Button variant="subtle" onClick={handleFullScreen}>
+          <Button variant="ghost" onClick={handleFullScreen}>
             {isfullScreen ? "Exit Fullscreen" : "Enter Fullscreen"}
           </Button>
         </Flex>
