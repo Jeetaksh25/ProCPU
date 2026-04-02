@@ -12,12 +12,12 @@ import { Box, Text, Flex, Badge } from "@chakra-ui/react";
 import { theme } from "../../../theme/theme";
 
 const COLUMN_META = {
-  pid: { label: "Process ID (PID)", badge: "pid", badgeScheme: "green" },
-  at: { label: "Arrival Time (AT)", badge: "ms", badgeScheme: "gray" },
-  bt: { label: "Burst Time (BT)", badge: "ms", badgeScheme: "purple" },
-  ct: { label: "Completion Time (CT)", badge: "ms", badgeScheme: "blue" },
-  tat: { label: "Turnaround Time (TAT)", badge: "TAT", badgeScheme: "orange" },
-  wt: { label: "Waiting Time (WT)", badge: "WT", badgeScheme: "red" },
+  pid: { label: "Process ID", badge: "PID", badgeScheme: "green" },
+  at: { label: "Arrival Time", badge: "AT", badgeScheme: "gray" },
+  bt: { label: "Burst Time", badge: "BT", badgeScheme: "purple" },
+  ct: { label: "Completion Time", badge: "CT", badgeScheme: "blue" },
+  tat: { label: "Turnaround Time", badge: "TAT", badgeScheme: "orange" },
+  wt: { label: "Waiting Time", badge: "WT", badgeScheme: "red" },
 };
 
 const DEFAULT_COLUMNS = [
@@ -31,17 +31,24 @@ const DEFAULT_COLUMNS = [
 
 const makeHeaderTemplate = (field) => {
   const meta = COLUMN_META[field] ?? {
-    label: field.toUpperCase(),
+    label: field,
     badge: null,
   };
   return () => (
-    <Flex direction="column" align="center" gap="2px" py={1}>
+    <Flex
+      direction="row"
+      align="center"
+      gap={2}
+      py={1}
+      mx={"auto"}
+      justify={"center"}
+    >
       <Text
-        fontSize="11px"
+        fontSize="xs"
         fontWeight={600}
         color={theme.colors.textPrimary}
-        textTransform="uppercase"
-        letterSpacing="0.07em"
+        letterSpacing="0.09em"
+        textAlign={"center"}
       >
         {meta.label}
       </Text>
@@ -50,7 +57,7 @@ const makeHeaderTemplate = (field) => {
           bg={`${meta.badgeScheme}.100`}
           color={`${meta.badgeScheme}.700`}
           variant="subtle"
-          fontSize="9px"
+          fontSize="xs"
           px={1}
           py={0}
           borderRadius="4px"
@@ -86,7 +93,6 @@ const tableStyles = `
     font-weight: 600 !important;
     font-size: 11px !important;
     letter-spacing: 0.06em !important;
-    text-transform: uppercase !important;
   }
 
   .stats-grid .e-row td.e-rowcell {
@@ -191,10 +197,16 @@ const StatsTable = ({
     <>
       <style>{tableStyles}</style>
 
-      <GlassBox p={6} mb={6} flexDir="column" blur="4px">
+      <GlassBox py={10} px={20} mb={6} flexDir="column" blur="4px">
         <Flex justify="space-between" align="center" mb={4}>
           <Box flex={1}>
-            <HeadingText title={title} variant="section" fontSize="2xl" mb="2px" align="center" />
+            <HeadingText
+              title={title}
+              variant="section"
+              fontSize="2xl"
+              mb="2px"
+              align="center"
+            />
             <Text
               fontSize="sm"
               color={theme.colors.textMuted}
@@ -205,13 +217,13 @@ const StatsTable = ({
             </Text>
           </Box>
           <Badge
-            bg={theme.colors.primary}
+            bg={"purple.100"}
             variant="subtle"
             borderRadius="8px"
             px={3}
             py={1}
-            fontSize="11px"
-            color={theme.colors.background}
+            fontSize="XS"
+            color={"purple.700"}
           >
             {data.length} rows
           </Badge>
@@ -230,9 +242,7 @@ const StatsTable = ({
               <ColumnDirective
                 key={col.field}
                 field={col.field}
-                headerText={
-                  COLUMN_META[col.field]?.label ?? col.field.toUpperCase()
-                }
+                headerText={COLUMN_META[col.field]?.label ?? col.field}
                 headerTemplate={makeHeaderTemplate(col.field)}
                 width={col.width ?? "120"}
                 textAlign="Center"

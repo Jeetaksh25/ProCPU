@@ -104,13 +104,22 @@ const StatsPage = () => {
   ];
 
   return (
-    <Box w="90%" mx="auto" minH="100vh" display="flex" flexDir="column" p={6} mt={20} gap={10}>
-      <HeadingText
-        title="Statistics"
-        subtitle="Analyze scheduling performance and metrics"
-        variant="hero"
-      />
-      <Box w="90%" mx={'auto'}>
+    <Box
+      w="90%"
+      mx="auto"
+      minH="100vh"
+      display="flex"
+      flexDir="column"
+      p={6}
+      mt={20}
+      gap={20}
+    >
+      <Box w="90%" mx={"auto"} display="flex" flexDir="column">
+        <HeadingText
+          title="Statistics"
+          subtitle="Analyze scheduling performance and metrics"
+          variant="hero"
+        />
         <StatsCards
           avgWT={avgWT}
           avgTAT={avgTAT}

@@ -428,7 +428,7 @@ const GanttChart = ({ isfullScreen, setFullScreen }) => {
         minH="140px"
       >
         <Text color="whiteAlpha.400" fontSize="sm">
-          No processes — add some and run the simulation.
+          No processes, add some and run the simulation.
         </Text>
       </GlassBox>
     );

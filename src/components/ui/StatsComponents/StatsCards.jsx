@@ -48,7 +48,7 @@ const StatsCard = ({
       formulaBg: "blue.50",
       formulaColor: "blue.700",
       description:
-        "Full lifecycle time — covers both waiting and CPU execution. Always ≥ WT.",
+        "Full lifecycle time, covers both waiting and CPU execution. Always ≥ WT.",
       badge: "Reflects full lifecycle",
       badgeScheme: "blue",
     },
@@ -87,7 +87,7 @@ const StatsCard = ({
   ];
 
   return (
-    <Grid templateColumns="repeat(2, 1fr)" gap={10} my={6} w="100%">
+    <Grid templateColumns="repeat(2, 1fr)" gap={10} w="100%">
       {STATS_CONFIG.map((card) => (
         <StatCardItem key={card.id} card={card} />
       ))}

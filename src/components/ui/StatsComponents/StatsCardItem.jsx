@@ -35,6 +35,7 @@ const StatCardItem = ({ card }) => (
     hoverColor={card.hoverColor ?? theme.colors.primary}
     userSelect="none"
     blur="3px"
+    minH="260px"
   >
     <Flex justify="space-between" align="flex-start">
       <Text

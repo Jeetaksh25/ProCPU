@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 const MotionFlex = motion(Flex);
 
-// Static styles outside component — never recreated on re-render
+// Static styles outside component, never recreated on re-render
 const staticStyles = (radius) => ({
   backdropFilter: "blur(12px)",
   WebkitBackdropFilter: "blur(12px)",
