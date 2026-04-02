@@ -22,6 +22,7 @@ const Background = () => {
       zIndex={0}
       pointerEvents="none"
       overflow="hidden"
+      background={"white"}
     >
       <Box
         position="absolute"
